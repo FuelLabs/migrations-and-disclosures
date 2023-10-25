@@ -2,8 +2,8 @@
   "name": "breaking-change-log",
   "version": "1.0.0",
   "scripts": {
-    "lint:check": "markdownlint --config .markdownlint.yaml '**/*.md'",
-    "lint:fix": "markdownlint --config .markdownlint.yaml '**/*.md' --fix"
+    "lint:check": "markdownlint --config .markdownlint.yaml 'breaking-changes-log.md'",
+    "lint:fix": "markdownlint --config .markdownlint.yaml 'breaking-changes-log.md' --fix"
   },
   "dependencies": {
     "markdownlint-cli": "^0.37.0"
