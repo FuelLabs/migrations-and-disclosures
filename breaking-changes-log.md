@@ -1,4 +1,12 @@
-# Fuel Breaking Changes Log
+---
+title: Breaking Changes Log
+category: Testnet Migration
+parent:
+  label: Guides
+  link: /guides
+---
+
+# Breaking Changes Log
 
 ## October 2, 2023
 
@@ -56,7 +64,7 @@ Wallet.fromPrivateKey(pk, provider);
 Wallet.generate({ provider });
 ```
 
-#### Account Class
+#### 'Account' Class
 
 ```typescript
 /* BEFORE - v0.57.0 */
