@@ -24,7 +24,7 @@ All of these methods now require a Provider to be passed in:
 
 #### Wallet Methods
 
-Some of these methods used to accept a URL instead of a `Provider` object. Note that the `provider` param *has* to be a `Provider` object now.
+Some of these methods used to accept a URL instead of a `Provider` object. Note that the `provider` parameter *has* to be a `Provider` object now.
 
 ```typescript
 const provider = await Provider.create(url);
@@ -70,7 +70,7 @@ const account = new Account(address);
 const account = new Account(address, provider);
 ```
 
-#### PrivateKeyVault
+#### `PrivateKeyVault`
 
 These are the options that are accepted by the `PrivateKeyVault` constructor. `provider` is now a required input.
 
@@ -89,7 +89,7 @@ interface PkVaultOptions {
 }
 ```
 
-#### MnemonicVault
+#### `MnemonicVault`
 
 ```typescript
 /* BEFORE - v0.57.0 */
@@ -106,7 +106,7 @@ interface MnemonicVaultOptions {
 }
 ```
 
-#### WalletManager
+#### `WalletManager`
 
 ```typescript
 /* BEFORE - v0.57.0 */
@@ -147,7 +147,7 @@ No breaking changes this week! 🦀
 
 Release: [Sway v0.46.0](https://github.com/FuelLabs/sway/releases/tag/v0.46.0)
 
-From now on, string literals produce the str slice type instead of the string array type. To convert between string arrays and slices, you can use the newly provided intrinsics.
+From now on, string literals produce the `str` slice type instead of the string array type. To convert between string arrays and slices, you can use the newly provided intrinsics.
 
 ```sway
 /* BEFORE - v0.45.0 */

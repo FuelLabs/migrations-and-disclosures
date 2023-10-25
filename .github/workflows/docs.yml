@@ -7,15 +7,12 @@ on:
   pull_request:
 
 jobs:
-
   lint-docs:
     name: Lint Docs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
+      - uses: FuelLabs/github-actions/setups/node@master
       - name: Lint Check
         run: |
           pnpm install
