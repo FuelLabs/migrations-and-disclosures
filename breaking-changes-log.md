@@ -2,15 +2,11 @@
 
 ## October 2, 2023
 
-### Sway
-
-No breaking changes this week! 🌴
-
 ### TS SDK
 
 Release: [TS SDK v0.60.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.60.0)
 
-Provider is used so widely in our SDK, there are multiple breaking changes that we need to be aware of and need to communicate to our users:
+`Provider` is used so widely in our SDK, there are multiple breaking changes that we need to be aware of and need to communicate to our users:
 
 ```typescript
 /* BEFORE - v0.57.0 */
@@ -20,7 +16,7 @@ const provider = new Provider(url)
 const provider = await Provider.create(url)
 ```
 
-All of these methods now require a Provider to be passed in:
+All of these methods now require a `Provider` to be passed in:
 
 #### Wallet Methods
 
@@ -136,10 +132,6 @@ const predicate = new Predicate(bytes, chainId, jsonAbi);
 /* AFTER - v0.60.0 */ 
 const predicate = new Predicate(bytes, provider, jsonAbi);
 ```
-
-### Rust SDK
-
-No breaking changes this week! 🦀
 
 ## September 18, 2023
 
