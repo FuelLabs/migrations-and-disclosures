@@ -1,6 +1,6 @@
 ---
 title: Breaking Changes Log
-category: Testnet Migration
+category: Migration Guide
 parent:
   label: Guides
   link: /guides
