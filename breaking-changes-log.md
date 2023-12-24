@@ -8,6 +8,375 @@ parent:
 
 # Breaking Changes Log
 
+## December 23, 2023 (Beta 5)
+
+### Sway
+
+Release: [Sway v0.48.1](https://github.com/FuelLabs/sway/releases/tag/v0.48.1)
+
+Instruction changes LW (Load Word) and SW (Store Word) has been replaced with LB (Load Byte) and SB (Store Byte) respectively fitting them in a single byte instead of a full word.
+
+```sway
+/* BEFORE - v0.46.0 */
+sw   output r1 i0;
+
+/* AFTER - v0.48.1 */
+sb   output r1 i0;
+```
+
+`DEFAULT_SUB_ID` This is equivalent to the `ZERO_B256` constant.
+
+```sway
+/* BEFORE - v0.46.0 */
+use std::call_frames::contract_id;
+
+fn foo(other_contract: ContractId) {
+     let other_asset = AssetId::default(other_contract);
+     let my_asset = AssetId::default(contract_id());
+}
+
+/* AFTER - v0.48.1 */
+fn foo(other_contract: ContractId) {
+     let other_asset = AssetId::new(other_contract, DEFAULT_SUB_ID);
+     let my_asset = AssetId::default();
+}
+```
+
+Eq trait for Option
+
+```sway
+/* BEFORE - v0.46.0 */
+let option1: Option<u64> = Some(5);
+let option2: Option<u64> = Some(5);
+
+match (option1, option2) {
+    (Some(a), Some(b)) => a == b,
+    (None, None) => true,
+    _ => false,
+}
+
+/* AFTER - v0.48.1 */
+let option1: Option<u64> = Some(5);
+let option2: Option<u64> = Some(5);
+
+if option1 == option2 {
+    return true
+} else {
+    return false
+}
+```
+
+
+Standard library `tx` introduces several new functions included `tx_max_fee()`, `tx_witness_limit()`, `script_gas_limit()`, `policies()`. `tx_gas_limit()` has since been deprecated to support the new `TxPolicy` replacing `TxParameters`
+
+```sway
+/* BEFORE - v0.46.0 */
+fn get_tx_gas_limit() -> u64;
+
+/* AFTER - v0.48.1 */
+fn get_script_gas_limit() -> u64;
+```
+
+The same existing functions inside standard library `tx` including `tx_gas_price()`, `tx_maturity()` now return `Option<u64>` and `Option<u32>` respectively instead of just `<u64>` and `<u32>`. 
+
+```sway
+/* BEFORE - v0.46.0 */
+fn get_tx_maturity() -> u32 {
+    tx_maturity()
+}
+
+/* AFTER - v0.48.1 */
+fn get_tx_maturity() -> u32 {
+    tx_maturity().unwrap()
+}
+```
+
+Along with these changes GTF opcodes has been changed in the standard following libraries
+1. [inputs.sw](https://github.com/FuelLabs/sway/pull/5281/files#diff-427b18b1692c5ee5541b43013d9859363da2c2fa6e940b25045d2514cac97428)
+2. [outputs.sw](https://github.com/FuelLabs/sway/pull/5281/files#diff-0625712126eb9f0c821b18e48379ad1213d6cbe0d38ba4fe721260232fb48eca)
+3. [tx.sw](https://github.com/FuelLabs/sway/pull/5281/files#diff-038f9ff7e5241cc345c0d460a0100ab88fbc72ac76db0e9af923bc8342b5c0c9)
+
+Byte conversions and array conversions for u265, u64, u32, u16, and b256 has been introduced into the stnadard library.
+
+1. [Byte conversions](https://github.com/FuelLabs/sway/tree/master/sway-lib-std/src/bytes_conversions)
+
+```sway
+/* AFTER - v0.48.1 */
+fn foo() {
+  let x: u16 = 513;
+  let result = x.to_le_bytes();
+
+  assert(result[0] == 1_u8);
+  assert(result[1] == 2_u8);
+}
+```
+
+2. [Array conversions](https://github.com/FuelLabs/sway/tree/master/sway-lib-std/src/array_conversions)
+
+```sway
+/* AFTER - v0.48.1 */
+fn foo() {
+  let x: u16 = 513;
+  let result = x.to_le_bytes();
+
+  assert(result.get(0).unwrap() == 1_u8);
+  assert(result.get(1).unwrap() == 2_u8);
+}
+```
+
+Power uses a `u32` instead of self
+
+```sway
+/* BEFORE - v0.46.0 */
+assert(2u16.pow(2u16) == 4u16);
+
+/* AFTER - v0.48.1 */
+assert(2u16.pow(2u32) == 4u16);
+```
+
+### TS SDK 
+Release: [TS SDK v0.69.1](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.69.1)
+
+`chainInfoCache` and `nodeInfoCache` are now private methods to avoid users from accessing the invalid cached information after being stale.
+
+```typescript
+/* BEFORE - v0.60.0 */
+Provider.chainInfoCache[FUEL_NETWORK_URL]
+Provider.nodeInfoCache[FUEL_NETWORK_URL]
+
+/* AFTER - v0.69.1 */
+provider.getChain()
+provider.getNode()
+```
+
+`switchURL()` method to update the URL for the provider is now named `connect()`
+
+```typescript
+/* BEFORE - v0.60.0 */
+await provider.switchUrl(altProviderUrl);
+
+/* AFTER - v0.69.1 */
+await provider.connect(altProviderUrl);
+```
+
+Suppot for new Sway types has been introduced with 
+
+1. Bytes
+
+```typescript
+/* AFTER - v0.69.1 */
+const bytes = [40, 41, 42];
+const { value } = await contract.functions.bytes_comparison(bytes).simulate();
+```
+
+2. Raw Slices
+
+```typescript
+/* AFTER - v0.69.1 */
+const rawSlice = [40, 41, 42];
+const { value } = await contract.functions.raw_slice_comparison(rawSlice).simulate();
+```
+
+3. StdString
+
+```typescript
+/* AFTER - v0.69.1 */
+const stdString = 'Hello World';
+const { value } = await contract.functions.string_comparison(stdString).simulate();
+```
+
+Typegen tries to resolve, auto-load, and embed the Storage Slots for your Contract within the MyContract__factory class. Still, you can override it alongside other options from DeployContractOptions, when calling the deployContract method:
+
+```typescript
+/* AFTER - v0.69.1 */
+import storageSlots from "../contract/out/debug/storage-slots.json";
+
+const contract = await MyContract__factory.deployContract(bytecode, wallet, {
+  storageSlots,
+});
+```
+
+`concat`, `arrayify`, and `hexlify` and  has been introduced to the utils replace their respective functions from ethers library to avoid reexporting of ethers functions
+
+```typescript
+/* BEFORE - v0.60.0 */
+import {concat, arrayify, hexlify } from '@ethersproject/bytes';
+      
+const someBytes = concat([new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6]), new Uint8Array([7, 8, 9])]);
+const someHex = hexlify(new Uint8Array([0, 1, 2, 3]))
+const someArray = arrayify(new Uint8Array([0, 1, 2, 3]))
+/* AFTER - v0.69.1 */
+import {concat, arrayify, hexlify } from '@fuel-ts/utils';
+
+const someBytes = concat([new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6]), new Uint8Array([7, 8, 9])]);
+const someHex = hexlify(new Uint8Array([0, 1, 2, 3]))
+const someArray = arrayify(new Uint8Array([0, 1, 2, 3]))
+```
+
+`Address` types can no longer be used to directly to represent a `b256` and must use the `toB256()` conversion instead.
+
+```typescript
+/* BEFORE - v0.60.0 */
+const addressId = {
+  value: userWallet.address,
+};
+
+tokenContract.functions.transfer_coins_to_output(
+  addressId,
+  assetId,
+  amount
+).call()
+
+/* AFTER - v0.69.1 */
+const addressId = {
+  value: userWallet.address.toB256(),
+};
+
+tokenContract.functions.transfer_coins_to_output(
+  addressId,
+  assetId,
+  amount
+).call()
+```
+
+`Account` class `fund()` method now takes in two new parameters `quantities` and `fee` of type `CoinQuantity[]` and `BN` respectively which can be taken off of the provider `getTransactionCost()` method.
+
+```typescript
+/* BEFORE - v0.60.0 */
+await wallet.fund(transactionRequest);
+
+/* AFTER - v0.69.1 */
+const { maxFee, requiredQuantities } = await provider.getTransactionCost(transactionRequest);
+
+await wallet.fund(transactionRequest, quantities, fee);
+```
+
+`provider`'s `getTransactionCost` breaks down its old `fee` into a `minFee`, `usedFee`, and `maxFee` based on the real calculation of the transaction. `requiredQuantities`, `receipts`, `minGas`, `maxGas`, has also been introduced of types `coinQuantity[]` ` TransactionResultReceipt[]`, `BN`, `BN` to improve the the granulatiry of cost estimation
+
+```typescript
+/* BEFORE - v0.60.0 */
+const { fee } = await this.account.provider.getTransactionCost(transactionRequest);
+
+/* AFTER - v0.69.1 */
+const { requiredQuantities, receipts, minGas, maxGas, minFee, maxFee, usedFee } = await this.account.provider.getTransactionCost(transactionRequest);
+```
+
+`getTransferOperations` function now takes in `receipts` parameter as well ensuring contract transactions returns transfer asset
+
+```typescript
+/* BEFORE - v0.60.0 */
+const operations = getTransferOperations({inputs: [], outputs: []});
+
+/* AFTER - v0.69.1 */
+const operations = getTransferOperations({inputs: [], outputs: [], receipts: []});
+```
+
+Predicate introduces a new `getTransferTxId` alculate the transaction ID for a Predicate.transfer transaction.
+
+```typescript
+/* AFTER - v0.69.1 */
+const txId = await predicate.getTransferTxId(address, amount, BaseAssetId, {gasPrice});
+```
+
+`deployContract` method contains new parameter `storageSlotsPath` to avoid If we don't auto-load these storage slots, some contracts will revert because of improper/missing initialization of storage slots.
+
+```typescript
+/* BEFORE - v0.60.0 */
+const assetId = BaseAssetId;
+
+/* AFTER - v0.69.1 */
+const assetId: AssetId = { value: BaseAssetId };
+```
+
+`AssetId` has been introduced to match sway standard library a `Struct` wrapper around an inner `Bits256` value
+
+
+### Rust SDK
+
+Release: [Rust SDK v0.54.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.54.0)
+
+In Sway, `U256` has been deprecated in favor of `u256`. It is no longer supported in the SDK. Usage of `U256` will now result in a runtime error.
+
+`TxPolicies` superseeds `TxParameters`
+
+```rust
+/* BEFORE - v0.48.0 */
+let tx_parameters = TxParameters::default()
+
+/* AFTER - v0.54.0 */
+let tx_policies = TxPolicies::default()
+```
+
+Three new optional fields in `TxPolicies` have been introduced
+
+1. `WitnessLimit` sets a new restriction for transaction witnesses by introducing a limit on the max byte size of witnesses in transactions.
+2. `MaxFee` which sets an upper limit on the transaction fee that a user is willing to pay.
+3. `SciptGasLimit` which no longer constraints predicate execution time but exclusively limits the gas limit of scipts now. If this field is not set the SDK will estimate gas consumption and set it automatically.
+
+Additionally `GasPrice` and `Maturity` fields within `TxPolicies` are now optional parameters
+
+```rust
+/* BEFORE - v0.48.0 */
+let tx_parameters = TxParameters::new(gas_price, gas_limit, maturity)
+
+/* AFTER - v0.54.0 */
+let tx_policies = TxPolicies::new(Some(gas_price), Some(witness_limit), Some(maturity), Some(max_fee), Some(script_gas_limit))
+```
+
+TxPolicy Pitfalls
+
+1. If the `max_fee > policies.max_fee`, then transaction will be rejected.
+2. If the `witnessses_size > policies.witness_limit`, then transaction will be rejected
+
+Predicates `get_message_proof` now uses `nonce` instead of `msg_id`
+
+```rust
+/* BEFORE - v0.48.0 */
+let proof = predicate.try_provider()?
+  .get_message_proof(&tx_id, &msg_id, None, Some(2))
+
+/* AFTER - v0.54.0 */
+let proof = predicate.try_provider()?
+  .get_message_proof(&tx_id, &msg_nonce, None, Some(2))
+```
+
+Predicates no longer uses `ChainId` for address calculations
+
+Using local chain configs `manual_blocks_enabled` option is replaced by with new `debug` flag. Additionally with `local_node()` being deprecated by `default()` options `utxo_validation` and `manual_blocks_enabled` are enabled by default for the test providers.
+
+```rust
+/* BEFORE - v0.48.0 */
+let config = Config {
+    utxo_validation: true,
+    manual_blocks_enabled: true,
+    ..Config::local_node()
+};
+
+/* AFTER - v0.54.0 */
+let config = Config {
+    ..Config::default()
+};
+```
+
+When using `transaction_builders` `BuildableTransaction` trait must be in scope
+
+```rust
+/* BEFORE - v0.48.0 */
+use fuels_core::{
+    types::{
+        transaction_builders::{TransactionBuilder, ScriptTransactionBuilder},
+    },
+};
+
+/* AFTER - v0.54.0 */
+use fuels_core::{
+    types::{
+        transaction_builders::{BuildableTransaction, ScriptTransactionBuilder},
+    },
+};
+```
+
+
 ## October 2, 2023
 
 ### TS SDK
