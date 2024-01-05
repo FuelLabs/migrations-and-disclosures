@@ -189,7 +189,7 @@ const { value } = await contract.functions.string_comparison(stdString).simulate
 ```
 <!-- markdownlint-enable md029 -->
 
-Typegen attempts to resolve, auto-load, and embed the Storage Slots for your Contract within the MyContract__factory class. However, you can override this, along with other options from DeployContractOptions, when calling the `deployContract` method:
+Typegen attempts to resolve, auto-load, and embed the Storage Slots for your Contract within the `MyContract__factory` class. However, you can override this, along with other options, when calling the `deployContract` method:
 
 ```typescript
 /* AFTER - v0.69.1 */
