@@ -14,7 +14,7 @@ parent:
 
 Release: [Sway v0.48.1](https://github.com/FuelLabs/sway/releases/tag/v0.48.1)
 
-Instruction changes LW (Load Word) and SW (Store Word) has been replaced with LB (Load Byte) and SB (Store Byte) respectively fitting them in a single byte instead of a full word.
+Instruction changes: LW (Load Word) and SW (Store Word) have been replaced with LB (Load Byte) and SB (Store Byte), respectively, fitting them into a single byte instead of a full word.
 
 ```sway
 /* BEFORE - v0.46.0 */
@@ -24,7 +24,7 @@ sw   output r1 i0;
 sb   output r1 i0;
 ```
 
-`DEFAULT_SUB_ID` This is equivalent to the `ZERO_B256` constant.
+`DEFAULT_SUB_ID` is equivalent to the `ZERO_B256` constant.
 
 ```sway
 /* BEFORE - v0.46.0 */
@@ -42,7 +42,7 @@ fn foo(other_contract: ContractId) {
 }
 ```
 
-Eq trait for Option
+The `Eq` trait now exists for `Option`.
 
 ```sway
 /* BEFORE - v0.46.0 */
@@ -66,7 +66,7 @@ if option1 == option2 {
 }
 ```
 
-Standard library `tx` introduces several new functions included `tx_max_fee()`, `tx_witness_limit()`, `script_gas_limit()`, `policies()`. `tx_gas_limit()` has since been deprecated to support the new `TxPolicy` replacing `TxParameters`
+The standard library `tx` introduces several new functions including `tx_max_fee()`, `tx_witness_limit()`, `script_gas_limit()`, and `policies()`. `tx_gas_limit()` has been deprecated to support the new `TxPolicy`, replacing `TxParameters`.
 
 ```sway
 /* BEFORE - v0.46.0 */
@@ -76,7 +76,7 @@ fn get_tx_gas_limit() -> u64;
 fn get_script_gas_limit() -> u64;
 ```
 
-The same existing functions inside standard library `tx` including `tx_gas_price()`, `tx_maturity()` now return `Option<u64>` and `Option<u32>` respectively instead of just `<u64>` and `<u32>`.
+The existing functions inside the standard library `tx`, including `tx_gas_price()` and `tx_maturity()`, now return `Option<u64>` and `Option<u32>` respectively, instead of just `u64` and `u32`.
 
 ```sway
 /* BEFORE - v0.46.0 */
@@ -90,13 +90,13 @@ fn get_tx_maturity() -> u32 {
 }
 ```
 
-Along with these changes GTF opcodes has been changed in the standard following libraries
+Along with these changes, GTF opcodes have been updated in the following standard libraries.
 
 1. [inputs.sw](https://github.com/FuelLabs/sway/pull/5281/files#diff-427b18b1692c5ee5541b43013d9859363da2c2fa6e940b25045d2514cac97428)
 2. [outputs.sw](https://github.com/FuelLabs/sway/pull/5281/files#diff-0625712126eb9f0c821b18e48379ad1213d6cbe0d38ba4fe721260232fb48eca)
 3. [tx.sw](https://github.com/FuelLabs/sway/pull/5281/files#diff-038f9ff7e5241cc345c0d460a0100ab88fbc72ac76db0e9af923bc8342b5c0c9)
 
-Byte conversions and array conversions for u265, u64, u32, u16, and b256 has been introduced into the stnadard library.
+Byte conversions and array conversions for u256, u64, u32, u16, and b256 have been introduced into the standard library.
 
 1. [Byte conversions](https://github.com/FuelLabs/sway/tree/master/sway-lib-std/src/bytes_conversions)
 
@@ -139,7 +139,7 @@ assert(2u16.pow(2u32) == 4u16);
 
 Release: [TS SDK v0.69.1](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.69.1)
 
-`chainInfoCache` and `nodeInfoCache` are now private methods to avoid users from accessing the invalid cached information after being stale.
+`chainInfoCache` and `nodeInfoCache` are now private methods, to prevent users from accessing invalid cached information after it becomes stale.
 
 ```typescript
 /* BEFORE - v0.60.0 */
@@ -151,7 +151,7 @@ provider.getChain()
 provider.getNode()
 ```
 
-`switchURL()` method to update the URL for the provider is now named `connect()`
+The `switchURL()` method, used to update the URL for the provider, is now named `connect()`.
 
 ```typescript
 /* BEFORE - v0.60.0 */
@@ -161,7 +161,7 @@ await provider.switchUrl(altProviderUrl);
 await provider.connect(altProviderUrl);
 ```
 
-Suppot for new Sway types has been introduced with
+Support for new Sway types has been introduced with:
 
 1. Bytes
 
@@ -189,7 +189,7 @@ const { value } = await contract.functions.string_comparison(stdString).simulate
 ```
 <!-- markdownlint-enable md029 -->
 
-Typegen tries to resolve, auto-load, and embed the Storage Slots for your Contract within the MyContract__factory class. Still, you can override it alongside other options from DeployContractOptions, when calling the deployContract method:
+Typegen attempts to resolve, auto-load, and embed the Storage Slots for your Contract within the MyContract__factory class. However, you can override this, along with other options from DeployContractOptions, when calling the `deployContract` method:
 
 ```typescript
 /* AFTER - v0.69.1 */
@@ -200,7 +200,7 @@ const contract = await MyContract__factory.deployContract(bytecode, wallet, {
 });
 ```
 
-`concat`, `arrayify`, and `hexlify` and  has been introduced to the utils replace their respective functions from ethers library to avoid reexporting of ethers functions
+`concat`, `arrayify`, and `hexlify` have been introduced to the utils to replace their respective functions from the ethers library, avoiding the reexporting of ethers functions.
 
 ```typescript
 /* BEFORE - v0.60.0 */
@@ -217,7 +217,7 @@ const someHex = hexlify(new Uint8Array([0, 1, 2, 3]))
 const someArray = arrayify(new Uint8Array([0, 1, 2, 3]))
 ```
 
-`Address` types can no longer be used to directly to represent a `b256` and must use the `toB256()` conversion instead.
+`Address` types can no longer be used directly to represent a `b256` and must instead use the `toB256()` conversion method.
 
 ```typescript
 /* BEFORE - v0.60.0 */
@@ -243,7 +243,7 @@ tokenContract.functions.transfer_coins_to_output(
 ).call()
 ```
 
-`Account` class `fund()` method now takes in two new parameters `quantities` and `fee` of type `CoinQuantity[]` and `BN` respectively which can be taken off of the provider `getTransactionCost()` method.
+The `Account` class's `fund()` method now takes in two new parameters: `quantities` and `fee`, of types `CoinQuantity[]` and `BN`, respectively. These can be derived from the provider's `getTransactionCost()` method.
 
 ```typescript
 /* BEFORE - v0.60.0 */
@@ -255,7 +255,7 @@ const { maxFee, requiredQuantities } = await provider.getTransactionCost(transac
 await wallet.fund(transactionRequest, quantities, fee);
 ```
 
-`provider`'s `getTransactionCost` breaks down its old `fee` into a `minFee`, `usedFee`, and `maxFee` based on the real calculation of the transaction. `requiredQuantities`, `receipts`, `minGas`, `maxGas`, has also been introduced of types `coinQuantity[]` `TransactionResultReceipt[]`, `BN`, `BN` to improve the the granulatiry of cost estimation
+The `provider`'s `getTransactionCost` now breaks down its old `fee` into `minFee`, `usedFee`, and `maxFee`, based on the actual calculation of the transaction. Additionally, `requiredQuantities`, `receipts`, `minGas`, and `maxGas`, of types `coinQuantity[]`, `TransactionResultReceipt[]`, `BN`, and `BN` respectively, have also been introduced to improve the granularity of cost estimation.
 
 ```typescript
 /* BEFORE - v0.60.0 */
@@ -265,7 +265,7 @@ const { fee } = await this.account.provider.getTransactionCost(transactionReques
 const { requiredQuantities, receipts, minGas, maxGas, minFee, maxFee, usedFee } = await this.account.provider.getTransactionCost(transactionRequest);
 ```
 
-`getTransferOperations` function now takes in `receipts` parameter as well ensuring contract transactions returns transfer asset
+The `getTransferOperations` function now takes in a `receipts` parameter as well, ensuring that contract transactions return the transfer asset.
 
 ```typescript
 /* BEFORE - v0.60.0 */
@@ -275,14 +275,14 @@ const operations = getTransferOperations({inputs: [], outputs: []});
 const operations = getTransferOperations({inputs: [], outputs: [], receipts: []});
 ```
 
-Predicate introduces a new `getTransferTxId` alculate the transaction ID for a Predicate.transfer transaction.
+The predicate introduces a new `getTransferTxId`, a method to calculate the transaction ID for a `Predicate.transfer` transaction.
 
 ```typescript
 /* AFTER - v0.69.1 */
 const txId = await predicate.getTransferTxId(address, amount, BaseAssetId, {gasPrice});
 ```
 
-`deployContract` method contains new parameter `storageSlotsPath` to avoid If we don't auto-load these storage slots, some contracts will revert because of improper/missing initialization of storage slots.
+The `deployContract` method contains a new parameter, `storageSlotsPath`, to avoid issues that may arise if storage slots are not auto-loaded. Without auto-loading, some contracts will revert due to improper or missing initialization of storage slots.
 
 ```typescript
 /* BEFORE - v0.60.0 */
@@ -292,7 +292,7 @@ const assetId = BaseAssetId;
 const assetId: AssetId = { value: BaseAssetId };
 ```
 
-`AssetId` has been introduced to match sway standard library a `Struct` wrapper around an inner `Bits256` value
+`AssetId` has been introduced to match the Sway standard library as a `Struct` wrapper around an inner `Bits256` value.
 
 ### Rust SDK
 
@@ -300,7 +300,7 @@ Release: [Rust SDK v0.54.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0
 
 In Sway, `U256` has been deprecated in favor of `u256`. It is no longer supported in the SDK. Usage of `U256` will now result in a runtime error.
 
-`TxPolicies` superseeds `TxParameters`
+`TxPolicies` supersedes `TxParameters`.
 
 ```rust
 /* BEFORE - v0.48.0 */
@@ -310,13 +310,13 @@ let tx_parameters = TxParameters::default()
 let tx_policies = TxPolicies::default()
 ```
 
-Three new optional fields in `TxPolicies` have been introduced
+Three new optional fields have been introduced in `TxPolicies`:
 
-1. `WitnessLimit` sets a new restriction for transaction witnesses by introducing a limit on the max byte size of witnesses in transactions.
-2. `MaxFee` which sets an upper limit on the transaction fee that a user is willing to pay.
-3. `SciptGasLimit` which no longer constraints predicate execution time but exclusively limits the gas limit of scipts now. If this field is not set the SDK will estimate gas consumption and set it automatically.
+1. `WitnessLimit`, which sets a new restriction for transaction witnesses by introducing a limit on the maximum byte size of witnesses in transactions.
+2. `MaxFee`, which sets an upper limit on the transaction fee that a user is willing to pay.
+3. `ScriptGasLimit`, which no longer constrains predicate execution time but exclusively limits the gas limit of scripts. If this field is not set, the SDK will estimate gas consumption and set it automatically.
 
-Additionally `GasPrice` and `Maturity` fields within `TxPolicies` are now optional parameters
+Additionally, `GasPrice` and `Maturity` fields within `TxPolicies` are now optional parameters.
 
 ```rust
 /* BEFORE - v0.48.0 */
@@ -326,12 +326,12 @@ let tx_parameters = TxParameters::new(gas_price, gas_limit, maturity)
 let tx_policies = TxPolicies::new(Some(gas_price), Some(witness_limit), Some(maturity), Some(max_fee), Some(script_gas_limit))
 ```
 
-TxPolicy Pitfalls
+`TxPolicy` Pitfalls
 
-1. If the `max_fee > policies.max_fee`, then transaction will be rejected.
-2. If the `witnessses_size > policies.witness_limit`, then transaction will be rejected
+1. If the `max_fee` is greater than `policies.max_fee`, then the transaction will be rejected.
+2. If the `witnesses_size` is greater than `policies.witness_limit`, then the transaction will be rejected.
 
-Predicates `get_message_proof` now uses `nonce` instead of `msg_id`
+The predicate's `get_message_proof` now uses `nonce` instead of `msg_id`.
 
 ```rust
 /* BEFORE - v0.48.0 */
@@ -343,9 +343,7 @@ let proof = predicate.try_provider()?
   .get_message_proof(&tx_id, &msg_nonce, None, Some(2))
 ```
 
-Predicates no longer uses `ChainId` for address calculations
-
-Using local chain configs `manual_blocks_enabled` option is replaced by with new `debug` flag. Additionally with `local_node()` being deprecated by `default()` options `utxo_validation` and `manual_blocks_enabled` are enabled by default for the test providers.
+When using local chain configs, the `manual_blocks_enabled` option is replaced by the new `debug` flag. Additionally, with `local_node()` being deprecated in favor of `default()`, the options `utxo_validation` and `manual_blocks_enabled` are enabled by default for the test providers.
 
 ```rust
 /* BEFORE - v0.48.0 */
@@ -361,7 +359,7 @@ let config = Config {
 };
 ```
 
-When using `transaction_builders` `BuildableTransaction` trait must be in scope
+When using `transaction_builders`, the `BuildableTransaction` trait must be in scope.
 
 ```rust
 /* BEFORE - v0.48.0 */
