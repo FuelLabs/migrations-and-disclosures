@@ -54,3 +54,14 @@ CLI
 dev
 TODO
 intrinsics
+configs
+runtime
+ethers
+utils
+MyContract
+Typegen
+StdString
+sw
+tx
+LW
+GTF
