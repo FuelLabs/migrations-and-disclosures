@@ -209,6 +209,7 @@ import {concat, arrayify, hexlify } from '@ethersproject/bytes';
 const someBytes = concat([new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6]), new Uint8Array([7, 8, 9])]);
 const someHex = hexlify(new Uint8Array([0, 1, 2, 3]))
 const someArray = arrayify(new Uint8Array([0, 1, 2, 3]))
+
 /* AFTER - v0.69.1 */
 import {concat, arrayify, hexlify } from '@fuel-ts/utils';
 
