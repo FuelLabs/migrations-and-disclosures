@@ -24,7 +24,7 @@ sw   output r1 i0;
 sb   output r1 i0;
 ```
 
-`DEFAULT_SUB_ID` is equivalent to the `ZERO_B256` constant.
+`DEFAULT_SUB_ID` has been introduced to improve UX. It is equivalent to the `ZERO_B256` constant.
 
 ```sway
 /* BEFORE - v0.46.0 */
