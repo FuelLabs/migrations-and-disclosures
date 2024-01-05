@@ -66,7 +66,6 @@ if option1 == option2 {
 }
 ```
 
-
 Standard library `tx` introduces several new functions included `tx_max_fee()`, `tx_witness_limit()`, `script_gas_limit()`, `policies()`. `tx_gas_limit()` has since been deprecated to support the new `TxPolicy` replacing `TxParameters`
 
 ```sway
@@ -77,7 +76,7 @@ fn get_tx_gas_limit() -> u64;
 fn get_script_gas_limit() -> u64;
 ```
 
-The same existing functions inside standard library `tx` including `tx_gas_price()`, `tx_maturity()` now return `Option<u64>` and `Option<u32>` respectively instead of just `<u64>` and `<u32>`. 
+The same existing functions inside standard library `tx` including `tx_gas_price()`, `tx_maturity()` now return `Option<u64>` and `Option<u32>` respectively instead of just `<u64>` and `<u32>`.
 
 ```sway
 /* BEFORE - v0.46.0 */
@@ -92,6 +91,7 @@ fn get_tx_maturity() -> u32 {
 ```
 
 Along with these changes GTF opcodes has been changed in the standard following libraries
+
 1. [inputs.sw](https://github.com/FuelLabs/sway/pull/5281/files#diff-427b18b1692c5ee5541b43013d9859363da2c2fa6e940b25045d2514cac97428)
 2. [outputs.sw](https://github.com/FuelLabs/sway/pull/5281/files#diff-0625712126eb9f0c821b18e48379ad1213d6cbe0d38ba4fe721260232fb48eca)
 3. [tx.sw](https://github.com/FuelLabs/sway/pull/5281/files#diff-038f9ff7e5241cc345c0d460a0100ab88fbc72ac76db0e9af923bc8342b5c0c9)
@@ -110,7 +110,7 @@ fn foo() {
   assert(result[1] == 2_u8);
 }
 ```
-
+<!-- markdownlint-disable md029 -->
 2. [Array conversions](https://github.com/FuelLabs/sway/tree/master/sway-lib-std/src/array_conversions)
 
 ```sway
@@ -123,6 +123,7 @@ fn foo() {
   assert(result.get(1).unwrap() == 2_u8);
 }
 ```
+<!-- markdownlint-enable md029 -->
 
 Power uses a `u32` instead of self
 
@@ -134,7 +135,8 @@ assert(2u16.pow(2u16) == 4u16);
 assert(2u16.pow(2u32) == 4u16);
 ```
 
-### TS SDK 
+### TS SDK
+
 Release: [TS SDK v0.69.1](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.69.1)
 
 `chainInfoCache` and `nodeInfoCache` are now private methods to avoid users from accessing the invalid cached information after being stale.
@@ -159,7 +161,7 @@ await provider.switchUrl(altProviderUrl);
 await provider.connect(altProviderUrl);
 ```
 
-Suppot for new Sway types has been introduced with 
+Suppot for new Sway types has been introduced with
 
 1. Bytes
 
@@ -169,6 +171,7 @@ const bytes = [40, 41, 42];
 const { value } = await contract.functions.bytes_comparison(bytes).simulate();
 ```
 
+<!-- markdownlint-disable md029 -->
 2. Raw Slices
 
 ```typescript
@@ -184,6 +187,7 @@ const { value } = await contract.functions.raw_slice_comparison(rawSlice).simula
 const stdString = 'Hello World';
 const { value } = await contract.functions.string_comparison(stdString).simulate();
 ```
+<!-- markdownlint-enable md029 -->
 
 Typegen tries to resolve, auto-load, and embed the Storage Slots for your Contract within the MyContract__factory class. Still, you can override it alongside other options from DeployContractOptions, when calling the deployContract method:
 
@@ -251,7 +255,7 @@ const { maxFee, requiredQuantities } = await provider.getTransactionCost(transac
 await wallet.fund(transactionRequest, quantities, fee);
 ```
 
-`provider`'s `getTransactionCost` breaks down its old `fee` into a `minFee`, `usedFee`, and `maxFee` based on the real calculation of the transaction. `requiredQuantities`, `receipts`, `minGas`, `maxGas`, has also been introduced of types `coinQuantity[]` ` TransactionResultReceipt[]`, `BN`, `BN` to improve the the granulatiry of cost estimation
+`provider`'s `getTransactionCost` breaks down its old `fee` into a `minFee`, `usedFee`, and `maxFee` based on the real calculation of the transaction. `requiredQuantities`, `receipts`, `minGas`, `maxGas`, has also been introduced of types `coinQuantity[]` `TransactionResultReceipt[]`, `BN`, `BN` to improve the the granulatiry of cost estimation
 
 ```typescript
 /* BEFORE - v0.60.0 */
@@ -289,7 +293,6 @@ const assetId: AssetId = { value: BaseAssetId };
 ```
 
 `AssetId` has been introduced to match sway standard library a `Struct` wrapper around an inner `Bits256` value
-
 
 ### Rust SDK
 
@@ -375,7 +378,6 @@ use fuels_core::{
     },
 };
 ```
-
 
 ## October 2, 2023
 
