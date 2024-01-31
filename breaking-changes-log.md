@@ -28,7 +28,7 @@ use std::{
 };
 ```
 
-Instruction changes: LW (Load Word) and SW (Store Word) have been replaced with LB (Load Byte) and SB (Store Byte), respectively, fitting them into a single byte instead of a full word.
+The instructions `LW` (Load Word) and `SW` (Store Word) are now replaced with `LB` (Load Byte) and `SB` (Store Byte), specifically for smaller data types like `u8`. This adjustment allows these types to be contained within a single byte, rather than occupying a full word. However, for other data types such as `u16`, the original instruction format remains unchanged.
 
 ```sway
 /* BEFORE - v0.46.0 */
@@ -167,6 +167,16 @@ const { cleanup, ip, port } = await launchNode({
 const { cleanup, ip, port } = await launchNode({
   args: ['--poa-instant', 'false', '--poa-interval-period', '400ms'],
 });
+```
+
+Contract calls requires `gasLimit` and `gasPrice` to be specified in `txParams()`.
+
+```typescript
+/* BEFORE - v0.60.0 */
+let resp = await contract.functions.count().simulate();
+
+/* AFTER - v0.72.0 */
+let resp = await contract.functions.count().txParams({ gasPrice: 1, gasLimit: 100_000 }).simulate();
 ```
 
 `chainInfoCache` and `nodeInfoCache` are now private methods, to prevent users from accessing invalid cached information after it becomes stale.
