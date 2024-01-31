@@ -14,7 +14,7 @@ parent:
 
 Release: [Sway v0.49.1](https://github.com/FuelLabs/sway/releases/tag/v0.49.1)
 
-Several elements have been shifted in the standard library. The `token.sw` has been renamed to `asset.sw`, affecting the `transfer()` and `mint_to()`` functions. This change brings greater consistency across all asset management functions.
+Numerous elements in the standard library have undergone changes. The `token.sw` file has been renamed to `asset.sw`, impacting the `transfer()` and `mint_to()` functions. This modification aims to bring about greater consistency across all functions related to asset management.
 
 ```sway
 /* BEFORE - v0.46.0 */
