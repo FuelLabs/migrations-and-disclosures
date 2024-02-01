@@ -349,7 +349,7 @@ let signature1: B512 = wallet.sign_message(data_to_sign).await?.as_ref().try_int
 let signature1: B512 = wallet.sign(data_to_sign).await?.as_ref().try_into()?;
 ```
 
-The `check_without_signatures` function in the `Transaction` trait has been renamed to `check`.
+The function `check_without_signatures` in the `Transaction` trait has been renamed to `check`. This updated `check` function retains its original capabilities and now includes the additional feature of checking with signatures.
 
 ```rust
 /* BEFORE - v0.48.0 */
@@ -359,7 +359,7 @@ tx.check_without_signatures(chain_info.latest_block.header.height, self.consensu
 tx.check(chain_info.latest_block.header.height, self.consensus_parameters())?;
 ```
 
-The `add_witnesses` function in the `Account` trait has been streamlined and is now simply referred to as `add_witness`.
+The typo in the `add_witnessses` function name under the `Account` trait has been fixed and is now `add_witnesses`.
 
 ```rust
 /* BEFORE - v0.48.0 */
