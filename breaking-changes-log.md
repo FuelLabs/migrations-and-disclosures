@@ -8,7 +8,7 @@ parent:
 
 # Breaking Changes Log
 
-## February 5, 2023 (Beta 5)
+## February 5, 2024 (Beta 5)
 
 ### Sway
 
