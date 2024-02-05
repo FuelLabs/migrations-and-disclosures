@@ -8,11 +8,11 @@ parent:
 
 # Breaking Changes Log
 
-## January 31, 2023 (Beta 5)
+## February 5, 2024 (Beta 5)
 
 ### Sway
 
-Release: [Sway v0.49.1](https://github.com/FuelLabs/sway/releases/tag/v0.49.1)
+Release: [Sway v0.49.2](https://github.com/FuelLabs/sway/releases/tag/v0.49.2)
 
 Numerous elements in the standard library have undergone changes. The `token.sw` file has been renamed to `asset.sw`, impacting the `transfer()` and `mint_to()` functions. This modification aims to bring about greater consistency across all functions related to asset management.
 
@@ -22,7 +22,7 @@ use std::{
     token::transfer
 
 };
-/* AFTER - v0.49.1 */
+/* AFTER - v0.49.2 */
 use std::{
     asset::transfer
 };
@@ -34,7 +34,7 @@ The instructions `LW` (Load Word) and `SW` (Store Word) are now replaced with `L
 /* BEFORE - v0.46.0 */
 sw   output r1 i0;
 
-/* AFTER - v0.49.1 */
+/* AFTER - v0.49.2 */
 sb   output r1 i0;
 ```
 
@@ -49,7 +49,7 @@ fn foo(other_contract: ContractId) {
      let my_asset = AssetId::default(contract_id());
 }
 
-/* AFTER - v0.49.1 */
+/* AFTER - v0.49.2 */
 fn foo(other_contract: ContractId) {
      let other_asset = AssetId::new(other_contract, DEFAULT_SUB_ID);
      let my_asset = AssetId::default();
@@ -69,7 +69,7 @@ match (option1, option2) {
     _ => false,
 }
 
-/* AFTER - v0.49.1 */
+/* AFTER - v0.49.2 */
 let option1: Option<u64> = Some(5);
 let option2: Option<u64> = Some(5);
 
@@ -86,7 +86,7 @@ The standard library `tx` introduces several new functions including `tx_max_fee
 /* BEFORE - v0.46.0 */
 fn get_tx_gas_limit() -> u64;
 
-/* AFTER - v0.49.1 */
+/* AFTER - v0.49.2 */
 fn get_script_gas_limit() -> u64;
 ```
 
@@ -98,7 +98,7 @@ fn get_tx_maturity() -> u32 {
     tx_maturity()
 }
 
-/* AFTER - v0.49.1 */
+/* AFTER - v0.49.2 */
 fn get_tx_maturity() -> u32 {
     tx_maturity().unwrap()
 }
@@ -115,7 +115,7 @@ Byte conversions and array conversions for u256, u64, u32, u16, and b256 have be
 1. [Byte conversions](https://github.com/FuelLabs/sway/tree/master/sway-lib-std/src/bytes_conversions)
 
 ```sway
-/* AFTER - v0.49.1 */
+/* AFTER - v0.49.2 */
 fn foo() {
   let x: u16 = 513;
   let result = x.to_le_bytes();
@@ -128,7 +128,7 @@ fn foo() {
 2. [Array conversions](https://github.com/FuelLabs/sway/tree/master/sway-lib-std/src/array_conversions)
 
 ```sway
-/* AFTER - v0.49.1 */
+/* AFTER - v0.49.2 */
 fn foo() {
   let x: u16 = 513;
   let result = x.to_le_bytes();
@@ -145,13 +145,13 @@ Power uses a `u32` instead of self
 /* BEFORE - v0.46.0 */
 assert(2u16.pow(2u16) == 4u16);
 
-/* AFTER - v0.49.1 */
+/* AFTER - v0.49.2 */
 assert(2u16.pow(2u32) == 4u16);
 ```
 
 ### TS SDK
 
-Release: [TS SDK v0.72.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.72.0)
+Release: [TS SDK v0.73.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.73.0)
 
 Several `fuel-core` configuration-related options have been removed from the `LaunchNodeOptions`. These include: `chainConfigPath`, `consensusKey`, `useInMemoryDb`, and `poaInstant`. These options can now only be passed through the `args` property.
 
@@ -163,7 +163,7 @@ const { cleanup, ip, port } = await launchNode({
   args: defaultFuelCoreArgs,
 });
 
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 const { cleanup, ip, port } = await launchNode({
   args: ['--poa-instant', 'false', '--poa-interval-period', '400ms'],
 });
@@ -175,7 +175,7 @@ Contract calls requires `gasLimit` and `gasPrice` to be specified in `txParams()
 /* BEFORE - v0.60.0 */
 let resp = await contract.functions.count().simulate();
 
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 let resp = await contract.functions.count().txParams({ gasPrice: 1, gasLimit: 100_000 }).simulate();
 ```
 
@@ -186,7 +186,7 @@ let resp = await contract.functions.count().txParams({ gasPrice: 1, gasLimit: 10
 Provider.chainInfoCache[FUEL_NETWORK_URL]
 Provider.nodeInfoCache[FUEL_NETWORK_URL]
 
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 provider.getChain()
 provider.getNode()
 ```
@@ -197,7 +197,7 @@ The `switchURL()` method, used to update the URL for the provider, is now named 
 /* BEFORE - v0.60.0 */
 await provider.switchUrl(altProviderUrl);
 
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 await provider.connect(altProviderUrl);
 ```
 
@@ -206,7 +206,7 @@ Support for new Sway types has been introduced with:
 1. Bytes
 
 ```typescript
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 const bytes = [40, 41, 42];
 const { value } = await contract.functions.bytes_comparison(bytes).simulate();
 ```
@@ -215,7 +215,7 @@ const { value } = await contract.functions.bytes_comparison(bytes).simulate();
 2. Raw Slices
 
 ```typescript
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 const rawSlice = [40, 41, 42];
 const { value } = await contract.functions.raw_slice_comparison(rawSlice).simulate();
 ```
@@ -223,7 +223,7 @@ const { value } = await contract.functions.raw_slice_comparison(rawSlice).simula
 3. StdString
 
 ```typescript
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 const stdString = 'Hello World';
 const { value } = await contract.functions.string_comparison(stdString).simulate();
 ```
@@ -232,7 +232,7 @@ const { value } = await contract.functions.string_comparison(stdString).simulate
 Typegen attempts to resolve, auto-load, and embed the Storage Slots for your Contract within the `MyContract__factory` class. However, you can override this, along with other options, when calling the `deployContract` method:
 
 ```typescript
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 import storageSlots from "../contract/out/debug/storage-slots.json";
 
 const contract = await MyContract__factory.deployContract(bytecode, wallet, {
@@ -250,7 +250,7 @@ const someBytes = concat([new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6]), 
 const someHex = hexlify(new Uint8Array([0, 1, 2, 3]))
 const someArray = arrayify(new Uint8Array([0, 1, 2, 3]))
 
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 import {concat, arrayify, hexlify } from '@fuel-ts/utils';
 
 const someBytes = concat([new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6]), new Uint8Array([7, 8, 9])]);
@@ -272,7 +272,7 @@ tokenContract.functions.transfer_coins_to_output(
   amount
 ).call()
 
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 const addressId = {
   value: userWallet.address.toB256(),
 };
@@ -290,7 +290,7 @@ The `Account` class's `fund()` method now takes in two new parameters: `quantiti
 /* BEFORE - v0.60.0 */
 await wallet.fund(transactionRequest);
 
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 const { maxFee, requiredQuantities } = await provider.getTransactionCost(transactionRequest);
 
 await wallet.fund(transactionRequest, quantities, fee);
@@ -302,7 +302,7 @@ The `provider`'s `getTransactionCost` now breaks down its old `fee` into `minFee
 /* BEFORE - v0.60.0 */
 const { fee } = await this.account.provider.getTransactionCost(transactionRequest);
 
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 const { requiredQuantities, receipts, minGas, maxGas, minFee, maxFee, usedFee } = await this.account.provider.getTransactionCost(transactionRequest);
 ```
 
@@ -312,14 +312,14 @@ The `getTransferOperations` function now takes in a `receipts` parameter as well
 /* BEFORE - v0.60.0 */
 const operations = getTransferOperations({inputs: [], outputs: []});
 
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 const operations = getTransferOperations({inputs: [], outputs: [], receipts: []});
 ```
 
 The predicate introduces a new `getTransferTxId`, a method to calculate the transaction ID for a `Predicate.transfer` transaction.
 
 ```typescript
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 const txId = await predicate.getTransferTxId(address, amount, BaseAssetId, {gasPrice});
 ```
 
@@ -329,7 +329,7 @@ The `deployContract` method contains a new parameter, `storageSlotsPath`, to avo
 /* BEFORE - v0.60.0 */
 const assetId = BaseAssetId;
 
-/* AFTER - v0.72.0 */
+/* AFTER - v0.73.0 */
 const assetId: AssetId = { value: BaseAssetId };
 ```
 
