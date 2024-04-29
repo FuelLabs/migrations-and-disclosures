@@ -8,48 +8,149 @@ parent:
 
 # Breaking Changes Log
 
-## May
-
-
 ## April
 
 ### Sway
 
 Release: [Sway v0.56.0](https://github.com/FuelLabs/sway/releases/tag/v0.56.0)
 
-* remove contract_id() in favor of ContractId::this()
-* add call_with_function_selector for new encoding
-* use GM opcode to fetch the base_asset_id
-* simplify asset transfer and mint functions
-* set new encoding as true by default and allow it to be disabled???
-* Disabling run_external???
+- remove contract_id() in favor of ContractId::this()
+- add call_with_function_selector for new encoding
+- use GM opcode to fetch the base_asset_id
+- simplify asset transfer and mint functions
+- set new encoding as true by default and allow it to be disabled???
+- Disabling run_external???
 
 Release: Sway v0.55.0
 
-* Update test SDK harness to fuel-core v0.24.2 and Fuels v0.57.0
+- Update test SDK harness to fuel-core v0.24.2 and Fuels v0.57.0
 
 Release: [Sway v0.54.0]
 
-* chore: bump fuel-core to 0.24.2, fuel-vm to 0.48.0, sdk to 0.57.0
+- chore: bump fuel-core to 0.24.2, fuel-vm to 0.48.0, sdk to 0.57.0
 
 Release: [Sway v0.53.0]
 
-* Fix and improve errors when the entry fns cannot be generated
-* chore: bump sdk to v0.56, fel-core to 0.23.0, fuel-vm to 0.47.1
+- Fix and improve errors when the entry fns cannot be generated
+- chore: bump sdk to v0.56, fel-core to 0.23.0, fuel-vm to 0.47.1
 
 ### TS-SDK
 
+Release [v0.83.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.83.0)
+
+- feat!: enable v1 encoding for everything
+
+`BaseAssetId` is no longer exported by `fuels`. It can be fetched from a `Provider`.
+
+```ts
+/* BEFORE */
+import { BasedAssetId } from "fuels";
+
+/* AFTER */
+const provider = await Provider.create(FUEL_NETWORK_URL);
+const baseAssetId = provider.getBaseAssetId();
+```
+
+`TransactionRequest.addCoinOutput` and `TransactionRequest.addChangeOutput` now requires an `assetId`, it no longer defaults to the `baseAssetId`.
+
+`TransactionRequest.fundWithFakeUtxos` now requires passing the `baseAssetId` as a function parameter. This is the only function that is base asset aware, so that it can be used specifically to estimate the transaction cost.
+
+`CoinQuantityLike` now requires an `AssetId`. Previously most of it's usages would default to the `BaseAssetId`, as this must now be fetched, then it must be passed to the type.
+
+`gasPrice` is calculated by the VM so we do not need use it anymore.
+
+```ts
+/* BEFORE */
+await factory.deployContract({ gasPrice });
+
+/* AFTER */
+await factory.deployContract();
+```
+
+`PolicyType.GasPrice` is now `PolicyType.Tip`.
+
+The `Account.fund` function parameters changed.
+
+```ts
+/* BEFORE */
+async fund<T extends TransactionRequest>(
+    request: T,
+    coinQuantities: CoinQuantity[],
+    fee: BN,
+    inputsWithEstimatedPredicates: TransactionRequestInput[],
+    addedSignatures?: number
+): Promise<T>
+
+/* AFTER */
+async fund<T extends TransactionRequest>(request: T, params: EstimatedTxParams): Promise<T>
+```
+
+Graphql URL now includes a versioning path: `http://127.0.0.1:4000/v1/graphql`.
+
+`calculateTransactionFee` now requires `tip`, `maxGasPerTx`, and `gasPrice`. Also `gasUsed` is not used anymore.
+
+```ts
+/* BEFORE */
+const { fee } = calculateTransactionFee({
+  gasUsed,
+  rawPayload,
+  consensusParameters: {
+    gasCosts,
+    feeParams: {
+      gasPerByte,
+      gasPriceFactor,
+    },
+  },
+});
+
+/* AFTER */
+const { fee } = calculateTransactionFee({
+  gasPrice,
+  tip,
+  consensusParameters: {
+    maxGasPerTx,
+    gasCosts,
+    feeParams: {
+      gasPerByte,
+      gasPriceFactor,
+    },
+  },
+  rawPayload,
+});
+```
+
+`AssetId` and `EvmAddress` property `value` was renamed to `bits`.
+
+```ts
+/* BEFORE */
+export type EvmAddress = {
+  value: B256AddressEvm;
+};
+export type AssetId = {
+  value: B256Address;
+};
+
+/* AFTER */
+export type EvmAddress = {
+  bits: B256AddressEvm;
+};
+
+export type AssetId = {
+  bits: B256Address;
+};
+```
+
 Release v0.80.0
 
-* Deprecate multiple encoding version support for configurable constants
-* support v1 encoding in program types
-* fee estimation for multicall
+- Deprecate multiple encoding version support for configurable constants
+- support v1 encoding in program types
+- fee estimation for multicall
 
 ### Rust SDK
 
 Release [v0.58.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.58.0)
 
-The new encoding is now the default encoding.  Use the following command if you would like to run your cargo tests with the legacy encoding.
+The new encoding is now the default encoding. Use the following command if you would like to run your cargo tests with the legacy encoding.
 
 ```sh
 cargo test --features legacy_encoding
@@ -127,6 +228,7 @@ The `witness_index` parameters in `CreateTransactionBuilder::with_bytecode_witne
 `CreateTransaction` no longer has `bytecode_length()`.
 
 `Header` no longer has `message_receipt_root`, but gains:
+
 ```rust
 pub message_outbox_root: Bytes32,
 pub event_inbox_root: Bytes32,
@@ -140,37 +242,37 @@ pub state_transition_bytecode_version: u32
 
 Release [Sway v0.52.0]
 
-* encapsulation for std-lib
-* rename predicate_id() to predicate_address() and add additional predicate docs
-* remove U256
-* expose external code laoding with std::execution::run_external
+- encapsulation for std-lib
+- rename predicate_id() to predicate_address() and add additional predicate docs
+- remove U256
+- expose external code laoding with std::execution::run_external
 
 ### TS-SDK
 
 Release v0.79.0
 
-* chore!: remove externalLiggedTypes from Interface class
+- chore!: remove externalLiggedTypes from Interface class
 
 Release v0.78.0
 
-* feat!: improve signing DX
+- feat!: improve signing DX
 
 Release v0.77.0
 
-* chore!: exporting asset types
-* feat!: accept predicate data on the Predicate constructor
+- chore!: exporting asset types
+- feat!: accept predicate data on the Predicate constructor
 
 ### Rust SDK
 
 Release [v0.56.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.56.0)
 
-Experimental encoding for logs was added.  Use the following command to run your tests with the experimental encoding
+Experimental encoding for logs was added. Use the following command to run your tests with the experimental encoding
 
 ```sh
 cargo test --features experimental
 ```
 
-**_NOTE_** experimental encoding is now the default encoding in [v0.57.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.57.0) 
+**_NOTE_** experimental encoding is now the default encoding in [v0.57.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.57.0)
 
 `Configurables` structs now need to be instantiated through a `::new(encoder_config)` or `::default()` method.
 
@@ -222,7 +324,7 @@ let tx_policies = TXPolicies::default().with_tip(1);
 
 `checked_dry_run` has been removed from `Provider`.
 
-`dry_run` now returns `Result<TxStatus>` instead of `Result<Vec<Receipt>>`.  The receipts can be taken with `tx_status.take_receipts()`.
+`dry_run` now returns `Result<TxStatus>` instead of `Result<Vec<Receipt>>`. The receipts can be taken with `tx_status.take_receipts()`.
 
 `TransactionResponse`'s `block_id` is replaced with `block_height`.
 
@@ -250,24 +352,24 @@ let transaction_cost = contract_instance
 
 Release: [Sway v0.51.0]
 
-* turn struct field privacy warnings into errors
-* enforce deterministic order in hashmaps
-* replace unmaintained generational-arena with slotmap
-* implements the Never ! types as a TypeInfo bottom type
+- turn struct field privacy warnings into errors
+- enforce deterministic order in hashmaps
+- replace unmaintained generational-arena with slotmap
+- implements the Never ! types as a TypeInfo bottom type
 
 Release: [Sway v0.50.0]
 
-* forbid configurables in constants
-* fixes for auto impl of AbiEncode; encoding version and better tests
-* redesign from train into From/Into pair
-* struct field privacy
+- forbid configurables in constants
+- fixes for auto impl of AbiEncode; encoding version and better tests
+- redesign from train into From/Into pair
+- struct field privacy
 
 ### TS-SDK
 
 Release: v0.74.0
 
-* remove provider from WalletManager specific types
-* chore!: restructure Account related packages
+- remove provider from WalletManager specific types
+- chore!: restructure Account related packages
 
 ## February 5, 2024 (Beta 5)
 
@@ -385,7 +487,9 @@ fn foo() {
   assert(result[1] == 2_u8);
 }
 ```
+
 <!-- markdownlint-disable md029 -->
+
 2. [Array conversions](https://github.com/FuelLabs/sway/tree/master/sway-lib-std/src/array_conversions)
 
 ```sway
@@ -398,6 +502,7 @@ fn foo() {
   assert(result.get(1).unwrap() == 2_u8);
 }
 ```
+
 <!-- markdownlint-enable md029 -->
 
 Power uses a `u32` instead of self
@@ -420,13 +525,13 @@ Several `fuel-core` configuration-related options have been removed from the `La
 /* BEFORE - v0.60.0 */
 const { cleanup, ip, port } = await launchNode({
   chainConfigPath,
-  consensusKey = '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
+  consensusKey = "0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298",
   args: defaultFuelCoreArgs,
 });
 
 /* AFTER - v0.73.0 */
 const { cleanup, ip, port } = await launchNode({
-  args: ['--poa-instant', 'false', '--poa-interval-period', '400ms'],
+  args: ["--poa-instant", "false", "--poa-interval-period", "400ms"],
 });
 ```
 
@@ -437,19 +542,22 @@ Contract calls requires `gasLimit` and `gasPrice` to be specified in `txParams()
 let resp = await contract.functions.count().simulate();
 
 /* AFTER - v0.73.0 */
-let resp = await contract.functions.count().txParams({ gasPrice: 1, gasLimit: 100_000 }).simulate();
+let resp = await contract.functions
+  .count()
+  .txParams({ gasPrice: 1, gasLimit: 100_000 })
+  .simulate();
 ```
 
 `chainInfoCache` and `nodeInfoCache` are now private methods, to prevent users from accessing invalid cached information after it becomes stale.
 
 ```typescript
 /* BEFORE - v0.60.0 */
-Provider.chainInfoCache[FUEL_NETWORK_URL]
-Provider.nodeInfoCache[FUEL_NETWORK_URL]
+Provider.chainInfoCache[FUEL_NETWORK_URL];
+Provider.nodeInfoCache[FUEL_NETWORK_URL];
 
 /* AFTER - v0.73.0 */
-provider.getChain()
-provider.getNode()
+provider.getChain();
+provider.getNode();
 ```
 
 The `switchURL()` method, used to update the URL for the provider, is now named `connect()`.
@@ -473,21 +581,27 @@ const { value } = await contract.functions.bytes_comparison(bytes).simulate();
 ```
 
 <!-- markdownlint-disable md029 -->
+
 2. Raw Slices
 
 ```typescript
 /* AFTER - v0.73.0 */
 const rawSlice = [40, 41, 42];
-const { value } = await contract.functions.raw_slice_comparison(rawSlice).simulate();
+const { value } = await contract.functions
+  .raw_slice_comparison(rawSlice)
+  .simulate();
 ```
 
 3. StdString
 
 ```typescript
 /* AFTER - v0.73.0 */
-const stdString = 'Hello World';
-const { value } = await contract.functions.string_comparison(stdString).simulate();
+const stdString = "Hello World";
+const { value } = await contract.functions
+  .string_comparison(stdString)
+  .simulate();
 ```
+
 <!-- markdownlint-enable md029 -->
 
 Typegen attempts to resolve, auto-load, and embed the Storage Slots for your Contract within the `MyContract__factory` class. However, you can override this, along with other options, when calling the `deployContract` method:
@@ -505,18 +619,26 @@ const contract = await MyContract__factory.deployContract(bytecode, wallet, {
 
 ```typescript
 /* BEFORE - v0.60.0 */
-import {concat, arrayify, hexlify } from '@ethersproject/bytes';
-      
-const someBytes = concat([new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6]), new Uint8Array([7, 8, 9])]);
-const someHex = hexlify(new Uint8Array([0, 1, 2, 3]))
-const someArray = arrayify(new Uint8Array([0, 1, 2, 3]))
+import { concat, arrayify, hexlify } from "@ethersproject/bytes";
+
+const someBytes = concat([
+  new Uint8Array([1, 2, 3]),
+  new Uint8Array([4, 5, 6]),
+  new Uint8Array([7, 8, 9]),
+]);
+const someHex = hexlify(new Uint8Array([0, 1, 2, 3]));
+const someArray = arrayify(new Uint8Array([0, 1, 2, 3]));
 
 /* AFTER - v0.73.0 */
-import {concat, arrayify, hexlify } from '@fuel-ts/utils';
+import { concat, arrayify, hexlify } from "@fuel-ts/utils";
 
-const someBytes = concat([new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6]), new Uint8Array([7, 8, 9])]);
-const someHex = hexlify(new Uint8Array([0, 1, 2, 3]))
-const someArray = arrayify(new Uint8Array([0, 1, 2, 3]))
+const someBytes = concat([
+  new Uint8Array([1, 2, 3]),
+  new Uint8Array([4, 5, 6]),
+  new Uint8Array([7, 8, 9]),
+]);
+const someHex = hexlify(new Uint8Array([0, 1, 2, 3]));
+const someArray = arrayify(new Uint8Array([0, 1, 2, 3]));
 ```
 
 `Address` types can no longer be used directly to represent a `b256` and must instead use the `toB256()` conversion method.
@@ -527,22 +649,18 @@ const addressId = {
   value: userWallet.address,
 };
 
-tokenContract.functions.transfer_coins_to_output(
-  addressId,
-  assetId,
-  amount
-).call()
+tokenContract.functions
+  .transfer_coins_to_output(addressId, assetId, amount)
+  .call();
 
 /* AFTER - v0.73.0 */
 const addressId = {
   value: userWallet.address.toB256(),
 };
 
-tokenContract.functions.transfer_coins_to_output(
-  addressId,
-  assetId,
-  amount
-).call()
+tokenContract.functions
+  .transfer_coins_to_output(addressId, assetId, amount)
+  .call();
 ```
 
 The `Account` class's `fund()` method now takes in two new parameters: `quantities` and `fee`, of types `CoinQuantity[]` and `BN`, respectively. These can be derived from the provider's `getTransactionCost()` method.
@@ -552,7 +670,9 @@ The `Account` class's `fund()` method now takes in two new parameters: `quantiti
 await wallet.fund(transactionRequest);
 
 /* AFTER - v0.73.0 */
-const { maxFee, requiredQuantities } = await provider.getTransactionCost(transactionRequest);
+const { maxFee, requiredQuantities } = await provider.getTransactionCost(
+  transactionRequest
+);
 
 await wallet.fund(transactionRequest, quantities, fee);
 ```
@@ -561,27 +681,43 @@ The `provider`'s `getTransactionCost` now breaks down its old `fee` into `minFee
 
 ```typescript
 /* BEFORE - v0.60.0 */
-const { fee } = await this.account.provider.getTransactionCost(transactionRequest);
+const { fee } = await this.account.provider.getTransactionCost(
+  transactionRequest
+);
 
 /* AFTER - v0.73.0 */
-const { requiredQuantities, receipts, minGas, maxGas, minFee, maxFee, usedFee } = await this.account.provider.getTransactionCost(transactionRequest);
+const {
+  requiredQuantities,
+  receipts,
+  minGas,
+  maxGas,
+  minFee,
+  maxFee,
+  usedFee,
+} = await this.account.provider.getTransactionCost(transactionRequest);
 ```
 
 The `getTransferOperations` function now takes in a `receipts` parameter as well, ensuring that contract transactions return the transfer asset.
 
 ```typescript
 /* BEFORE - v0.60.0 */
-const operations = getTransferOperations({inputs: [], outputs: []});
+const operations = getTransferOperations({ inputs: [], outputs: [] });
 
 /* AFTER - v0.73.0 */
-const operations = getTransferOperations({inputs: [], outputs: [], receipts: []});
+const operations = getTransferOperations({
+  inputs: [],
+  outputs: [],
+  receipts: [],
+});
 ```
 
 The predicate introduces a new `getTransferTxId`, a method to calculate the transaction ID for a `Predicate.transfer` transaction.
 
 ```typescript
 /* AFTER - v0.73.0 */
-const txId = await predicate.getTransferTxId(address, amount, BaseAssetId, {gasPrice});
+const txId = await predicate.getTransferTxId(address, amount, BaseAssetId, {
+  gasPrice,
+});
 ```
 
 The `deployContract` method contains a new parameter, `storageSlotsPath`, to avoid issues that may arise if storage slots are not auto-loaded. Without auto-loading, some contracts will revert due to improper or missing initialization of storage slots.
@@ -753,17 +889,17 @@ Release: [TS SDK v0.60.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.6
 
 ```typescript
 /* BEFORE - v0.57.0 */
-const provider = new Provider(url)
+const provider = new Provider(url);
 
 /* AFTER - v0.60.0 */
-const provider = await Provider.create(url)
+const provider = await Provider.create(url);
 ```
 
 All of these methods now require a `Provider` to be passed in:
 
 #### Wallet Methods
 
-Some of these methods used to accept a URL instead of a `Provider` object. Note that the `provider` parameter *has* to be a `Provider` object now.
+Some of these methods used to accept a URL instead of a `Provider` object. Note that the `provider` parameter _has_ to be a `Provider` object now.
 
 ```typescript
 const provider = await Provider.create(url);
@@ -869,10 +1005,10 @@ export type VaultConfig = {
 The `provider` is no longer optional. Note the change in parameter order, and that `chainId` is no longer required to be passed.
 
 ```typescript
-/* BEFORE - v0.57.0 */ 
+/* BEFORE - v0.57.0 */
 const predicate = new Predicate(bytes, chainId, jsonAbi);
 
-/* AFTER - v0.60.0 */ 
+/* AFTER - v0.60.0 */
 const predicate = new Predicate(bytes, provider, jsonAbi);
 ```
 
@@ -932,21 +1068,27 @@ The reason we have a distinct method for adding predicate resources is that the 
 
 ```typescript
 /* BEFORE - v0.55.0 */
-const predicateInputs: TransactionRequestInput[] = predicateUtxos.map((utxo) => ({
-  id: utxo.id,
-  type: InputType.Coin,
-  amount: utxo.amount,
-  assetId: utxo.assetId,
-  owner: utxo.owner.toB256(),
-  txPointer: '0x00000000000000000000000000000000',
-  witnessIndex: 0,
-  maturity: 0,
-  predicate: predicate.bytes,
-  predicateData: predicate.predicateData,
-}));
+const predicateInputs: TransactionRequestInput[] = predicateUtxos.map(
+  (utxo) => ({
+    id: utxo.id,
+    type: InputType.Coin,
+    amount: utxo.amount,
+    assetId: utxo.assetId,
+    owner: utxo.owner.toB256(),
+    txPointer: "0x00000000000000000000000000000000",
+    witnessIndex: 0,
+    maturity: 0,
+    predicate: predicate.bytes,
+    predicateData: predicate.predicateData,
+  })
+);
 
 /* AFTER - v0.57.0 */
-request.addPredicateResources(predicateUtxos, predicate.bytes, predicate.predicateData)
+request.addPredicateResources(
+  predicateUtxos,
+  predicate.bytes,
+  predicate.predicateData
+);
 ```
 
 ### Rust SDK
