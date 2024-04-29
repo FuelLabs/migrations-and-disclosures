@@ -47,13 +47,17 @@ Release v0.80.0
 
 ### Rust SDK
 
-Release v0.58.0
+Release [v0.58.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.58.0)
 
-* feature!: make experimental encoding default
+The new encoding is now the default encoding.  Use the following command if you would like to run your cargo tests with the legacy encoding.
+
+```sh
+cargo test --features legacy_encoding
+```
 
 Release [v0.57.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.57.0)
 
-The `BASE_ASSET_ID` constant has been removed and replaced by an new `Provider` function.
+The `BASE_ASSET_ID` constant has been removed and replaced by a new `Provider` function.
 
 ```rust
 /* BEFORE */
@@ -115,7 +119,7 @@ let chain_id = consensus_parameters.chain_id();
 ```
 
 The same applies to other parameter structs used when setting up a node, such as `TxParameters`, `ContractParameters`, `PredicateParameters` etc.
-
+F
 The `witness_index` parameters in `CreateTransactionBuilder::with_bytecode_witness_index` is now a `u16`.
 
 `NodeInfo` no longer has `min_gas_price`.
@@ -158,10 +162,87 @@ Release v0.77.0
 
 ### Rust SDK
 
-Release v0.56.0
+Release [v0.56.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.56.0)
 
-* feat!: add support for experimental encoding in logs
-* fix!: encoding capacity overflow
+Experimental encoding for logs was added.  Use the following command to run your tests with the experimental encoding
+
+```sh
+cargo test --features experimental
+```
+
+**_NOTE_** experimental encoding is now the default encoding in [v0.57.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.57.0) 
+
+`Configurables` structs now need to be instantiated through a `::new(encoder_config)` or `::default()` method.
+
+```rust
+/* BEFORE */
+let configurables = MyContractConfigurables::new().with_STRUCT(my_struct);
+
+/* AFTER */
+let configurables = MyContractConfigurables::default().with_STRUCT(my_struct);
+/* OR */
+let configurables = MyContractConfigurables::new(encoder_config).with_STRUCT(my_struct);
+```
+
+`Configurables::with_some_string_config(some_string)` methods now return a `Result<Configurables>` instead of `Configurables`.
+
+`Predicates::encode_data` now returns a `Result<UnresolvedBytes>` instead of `UnresolvedBytes`.
+
+`AbiEncoder` structs must be instantiated through a `::new(encoder_config)` or `::default()` method.
+
+```rust
+/* BEFORE */
+let encoded = ABIEncoder::encode(&args).resolve(0);
+
+/* AFTER */
+let encoded = ABIEncoder::default().encode(&args).resolve(0);
+/* OR */
+let encoded = ABIEncoder::new(config).encode(&args).resolve(0);
+```
+
+`EnumVariants` are now imported through `param_types::EnumVariants`.
+
+```rust
+/* BEFORE */
+use fuels::types::enum_variants::EnumVariants;
+
+/* AFTER */
+use fuels::types::param_types::EnumVariants;
+```
+
+`TxPolicies` `gas_price` is replaced with `tip`
+
+```rust
+/* BEFORE */
+let tx_policies = TXPolicies::default().with_gas_price(1);
+
+/* AFTER */
+let tx_policies = TXPolicies::default().with_tip(1);
+```
+
+`checked_dry_run` has been removed from `Provider`.
+
+`dry_run` now returns `Result<TxStatus>` instead of `Result<Vec<Receipt>>`.  The receipts can be taken with `tx_status.take_receipts()`.
+
+`TransactionResponse`'s `block_id` is replaced with `block_height`.
+
+`estimate_transaction_cost` has a new argument `block_horizon: Option<u32>`.
+
+```rust
+/* BEFORE */
+let transaction_cost = contract_instance
+  .methods()
+  .my_contract_call()
+  .estimate_transaction_cost(Some(tolerance))
+  .await?;
+
+/* AFTER */
+let transaction_cost = contract_instance
+  .methods()
+  .my_contract_call()
+  .estimate_transaction_cost(tolerance, block_horizon)
+  .await?;
+```
 
 ## February
 
