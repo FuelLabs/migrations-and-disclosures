@@ -57,8 +57,6 @@ let base_asset_id = AssetId::base_asset_id();
 let base_asset_id = AssetId:base();
 ```
 
-- simplify asset transfer and mint functions
-
 You can no longer access the following:
 - `force_transfer_to_contract()`
 - `transfer_to_address()`
@@ -107,8 +105,6 @@ The `forc-client` and `forc-tx` plugins now take `u16` instead of `u8` for witne
 ### TS-SDK
 
 Release [v0.83.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.83.0)
-
-- feat!: enable v1 encoding for everything
 
 `BaseAssetId` is no longer exported by `fuels`. It can be fetched from a `Provider`.
 
@@ -175,10 +171,10 @@ const { fee } = calculateTransactionFee({
 
 /* AFTER */
 const { fee } = calculateTransactionFee({
-  gasPrice,
-  tip,
+  gasPrice, // new
+  tip, // new
   consensusParameters: {
-    maxGasPerTx,
+    maxGasPerTx, // new
     gasCosts,
     feeParams: {
       gasPerByte,
@@ -289,8 +285,8 @@ let chain_id = consensus_parameters.chain_id();
 ```
 
 The same applies to other parameter structs used when setting up a node, such as `TxParameters`, `ContractParameters`, `PredicateParameters` etc.
-F
-The `witness_index` parameters in `CreateTransactionBuilder::with_bytecode_witness_index` is now a `u16`.
+
+The `witness_index` parameters in `CreateTransactionBuilder::with_bytecode_witness_index` are now a `u16`.
 
 `NodeInfo` no longer has `min_gas_price`.
 
@@ -310,8 +306,6 @@ pub state_transition_bytecode_version: u32
 ### Sway
 
 Release [Sway v0.52.0](https://github.com/FuelLabs/sway/releases/tag/v0.52.0)
-
-- encapsulation for std-lib
 
 The `bytes` field on `B512` and the `value` field `EvmAddress` have been renamed `bits`, made private, and made accessible via `bits()`.
 
