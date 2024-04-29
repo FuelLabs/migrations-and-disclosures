@@ -14,25 +14,95 @@ parent:
 
 Release: [Sway v0.56.0](https://github.com/FuelLabs/sway/releases/tag/v0.56.0)
 
-- remove contract_id() in favor of ContractId::this()
-- add call_with_function_selector for new encoding
-- use GM opcode to fetch the base_asset_id
+`contract_id()` has been removed in favor of `ContractId::this()`.
+
+```rust
+/* BEFORE */
+let contract_id = contract_id();
+
+/* AFTER */
+let contract_id = ContractId::this();
+```
+
+`call_with_function_selector_vec` has been removed in favor of `call_with_function_selector`.
+
+```rust
+/* BEFORE */
+pub fn call_with_function_selector_vec(
+  target: ContractId,
+  function_selector: Vec<u8>,
+  calldata: Vec<u8>,
+  single_value_type_arg: bool,
+  call_params: CallParams
+) {...}
+
+/* AFTER */
+pub fn call_with_function_selectoir_vec(
+  target: ContractId,
+  function_selector: Bytes // new
+  calldata: Bytes, // new
+  call_params: CallParams
+) {...}
+```
+
+The `BASE_ASSET_ID` constant has been removed, and `AssetId::base_asset_id()` is now `AssetId::base()`.
+
+```rust
+/* BEFORE */
+let base_asset_id = BASE_ASSET_ID;
+/* OR */
+let base_asset_id = AssetId::base_asset_id();
+
+/* AFTER */
+let base_asset_id = AssetId:base();
+```
+
 - simplify asset transfer and mint functions
-- set new encoding as true by default and allow it to be disabled???
-- Disabling run_external???
 
-Release: Sway v0.55.0
+You can no longer access the following:
+- `force_transfer_to_contract()`
+- `transfer_to_address()`
+- `mint_to_contract()`
+- `mint_to_address()`
 
-- Update test SDK harness to fuel-core v0.24.2 and Fuels v0.57.0
+Instead use the `transfer()`, `mint()`, and `mint_to()` functions accordingly.
+```rust
+/* BEFORE */
+let user = Address:from(address);
+mint_to_address(user, ZERO_B256, amount);
 
-Release: [Sway v0.54.0]
+/* AFTER */
+mint_to(Identity::Address(user), ZERO_B256, amount);
+```
 
-- chore: bump fuel-core to 0.24.2, fuel-vm to 0.48.0, sdk to 0.57.0
+The new encoding (encoding v1) is now set by default.  If you would like to build your forc project without v1 encoding then run the following command:
 
-Release: [Sway v0.53.0]
+```sh
+forc build --no-encoding-v1
+```
 
-- Fix and improve errors when the entry fns cannot be generated
-- chore: bump sdk to v0.56, fel-core to 0.23.0, fuel-vm to 0.47.1
+`run_external` in sway-lib-std has been removed until LDC is stabilized.
+
+Release: [Sway v0.55.0](https://github.com/FuelLabs/sway/releases/tag/v0.55.0)
+
+`GTF` constants along with the following functions have been removed to match the current Fuel VM instruction set:
+
+- `input_maturity()`
+- `tx_receipts_root()`
+
+`tx_gas_price` has been renamed `tx_tip`
+
+```rust
+/* BEFORE */
+let gas_price = tx_gas_price();
+
+/* AFTER */
+let tip = tx_tip();
+```
+
+Release: [Sway v0.54.0](https://github.com/FuelLabs/sway/releases/tag/v0.54.0)
+
+The `forc-client` and `forc-tx` plugins now take `u16` instead of `u8` for witness index types.
 
 ### TS-SDK
 
@@ -239,12 +309,84 @@ pub state_transition_bytecode_version: u32
 
 ### Sway
 
-Release [Sway v0.52.0]
+Release [Sway v0.52.0](https://github.com/FuelLabs/sway/releases/tag/v0.52.0)
 
 - encapsulation for std-lib
-- rename predicate_id() to predicate_address() and add additional predicate docs
-- remove U256
-- expose external code laoding with std::execution::run_external
+
+The `bytes` field on `B512` and the `value` field `EvmAddress` have been renamed `bits`, made private, and made accessible via `bits()`.
+
+```rust
+/* BEFORE */
+let bytes = myB12.bytes;
+let value = myEvmAddress.value;
+
+/* AFTER */
+let bits = myB512.bits();
+let bits = myEvmAddress.bits();
+```
+
+The fields on `U128` have been made private.
+
+```rust
+/* BEFORE */
+let zero_u128 = U128 { upper: 0, lower: 0 };
+let upper = zero_u128.upper;
+
+/* AFTER */
+let zero_u128 = U128::from(0, 0);
+let upper = zero_u128.upper();
+```
+
+The fields on `StorageKey` have been made private and are now accessed via:
+- `new()`
+- `slot()`
+- `offset()`
+- `field_id()`
+
+The following heap types have been updated to have private struct variables:
+- `Bytes`
+- `RawBytes`
+- `Vec`
+- `RawVec`
+- `String`
+
+```rust
+/* BEFORE */
+let bytes_ptr = bytes.buf.ptr();
+
+/* AFTER */
+let bytes_ptr = bytes.ptr();
+```
+
+The `value` field on `AssetId`, `ContractId`, and `Address` is now private and renamed `bits`.
+
+```rust
+/* BEFORE */
+let value = assetId.value;
+
+/* AFTER */
+let bits = assetId.bits();
+```
+
+`predicate_id()` has been renamed to `predicate_address()`.
+
+```rust
+/* BEFORE */
+let predicate = predicate_id();
+
+/* AFTER */
+let predicate = predicate_address();
+```
+
+`U256` has been removed use the native `u256` type instead.
+
+```rust
+/* BEFORE */
+let my_U256 = U256::max();
+
+/* AFTER */
+let my_u256 = u256::max();
+```
 
 ### TS-SDK
 
@@ -360,19 +502,60 @@ let transaction_cost = contract_instance
 
 ### Sway
 
-Release: [Sway v0.51.0]
+Release: [Sway v0.51.0](https://github.com/FuelLabs/sway/releases/tag/v0.51.0)
 
-- turn struct field privacy warnings into errors
-- enforce deterministic order in hashmaps
-- replace unmaintained generational-arena with slotmap
-- implements the Never ! types as a TypeInfo bottom type
+You can no longer access private fields in structs.
 
-Release: [Sway v0.50.0]
+```rust
+/* BEFORE */
+let private = my_struct.private // just a warning
 
-- forbid configurables in constants
-- fixes for auto impl of AbiEncode; encoding version and better tests
-- redesign from train into From/Into pair
-- struct field privacy
+/* AFTER */
+let private = my_struct.private // ERROR
+let private = my_struct.private() // you must create a function to access private variables
+```
+
+The `Never` type is now `!`.
+
+```rust
+/* BEFORE */
+let x: NEVER = { return 123 };
+
+/* AFTER */
+let x: ! = { return 123 };
+```
+
+Release: [Sway v0.50.0](https://github.com/FuelLabs/sway/releases/tag/v0.50.0)
+
+Configurables are now forbidden in const expressions.
+
+```rust
+// Not allowed
+script;
+
+configurable {
+    VALUE: u64 = 42,
+}
+
+fn main() {
+    const CONSTANT: u64 = VALUE;
+}
+```
+
+Struct fields are now private by default.  You must explicitly mark a field public.
+
+```rust
+/* BEFORE */
+pub struct Struct {
+  public_field: u8,
+}
+
+/* AFTER */
+pub struct Struct {
+  pub public_field: u8,
+  private_field: u8,
+}
+```
 
 ### TS-SDK
 
@@ -393,7 +576,8 @@ const vault = new MnemonicVault({
 });
 ```
 
-The Account and account related packages have been restructured.  Anything imported from the following packages will now be imported from `@fuel-ts/account`
+The Account and account related packages have been restructured. Anything imported from the following packages will now be imported from `@fuel-ts/account`
+
 - `@fuel-ts/hdwallet`
 - `@fuel-ts/mnemonic`
 - `@fuel-ts/predicate`
