@@ -134,17 +134,16 @@ export type AssetId = {
 export type EvmAddress = {
   bits: B256AddressEvm;
 };
-
 export type AssetId = {
   bits: B256Address;
 };
 ```
 
-Release v0.80.0
+Release [v0.80.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.80.0)
 
-- Deprecate multiple encoding version support for configurable constants
-- support v1 encoding in program types
-- fee estimation for multicall
+Removed unused property `usedFee` from `Provider.getTransactionCost` response.
+
+Renamed `getAssetId` to `getMintedAssetId`.
 
 ### Rust SDK
 
@@ -249,18 +248,29 @@ Release [Sway v0.52.0]
 
 ### TS-SDK
 
-Release v0.79.0
+Release [v0.79.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.79.0)
 
-- chore!: remove externalLiggedTypes from Interface class
+`externalLoggedTypes` has been removed from the `Interface` class.
 
-Release v0.78.0
+Release [v0.77.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.77.0)
 
-- feat!: improve signing DX
+Predicate data is now accepted on the `Predicate` constructor.
 
-Release v0.77.0
+```ts
+/* BEFORE */
+const predicate = new Predicate(bytecode, provider, abi, configurableConstants);
 
-- chore!: exporting asset types
-- feat!: accept predicate data on the Predicate constructor
+/* AFTER */
+const predicate = new Predicate({
+  bytecode,
+  abi, // optional
+  provider,
+  inputData, // optional
+  configurableConstants, // optional
+});
+```
+
+The `setData` method has been removed from `Predicate`. If you want to pass in predicate data after instantiating the `Predicate` or if you want to use different data than what was passed to the constructor, then you will have to create a new `Predicate` instance.
 
 ### Rust SDK
 
@@ -366,10 +376,32 @@ Release: [Sway v0.50.0]
 
 ### TS-SDK
 
-Release: v0.74.0
+Release: [v0.74.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.74.0)
 
-- remove provider from WalletManager specific types
-- chore!: restructure Account related packages
+`Provider` has been removed from `WalletManager` types.
+
+```ts
+/* Before */
+const vault = new MnemonicVault({
+  secret: mnemonic,
+  provider,
+});
+
+/* After */
+const vault = new MnemonicVault({
+  secret: mnemonic,
+});
+```
+
+The Account and account related packages have been restructured.  Anything imported from the following packages will now be imported from `@fuel-ts/account`
+- `@fuel-ts/hdwallet`
+- `@fuel-ts/mnemonic`
+- `@fuel-ts/predicate`
+- `@fuel-ts/providers`
+- `@fuel-ts/signer`
+- `@fuel-ts/wallet-manager`
+- `@fuel-ts/wallet`
+- `@fuel-ts/wordlists`
 
 ## February 5, 2024 (Beta 5)
 
