@@ -8,6 +8,186 @@ parent:
 
 # Breaking Changes Log
 
+## May
+
+
+## April
+
+### Sway
+
+Release: [Sway v0.56.0](https://github.com/FuelLabs/sway/releases/tag/v0.56.0)
+
+* remove contract_id() in favor of ContractId::this()
+* add call_with_function_selector for new encoding
+* use GM opcode to fetch the base_asset_id
+* simplify asset transfer and mint functions
+* set new encoding as true by default and allow it to be disabled???
+* Disabling run_external???
+
+Release: Sway v0.55.0
+
+* Update test SDK harness to fuel-core v0.24.2 and Fuels v0.57.0
+
+Release: [Sway v0.54.0]
+
+* chore: bump fuel-core to 0.24.2, fuel-vm to 0.48.0, sdk to 0.57.0
+
+Release: [Sway v0.53.0]
+
+* Fix and improve errors when the entry fns cannot be generated
+* chore: bump sdk to v0.56, fel-core to 0.23.0, fuel-vm to 0.47.1
+
+### TS-SDK
+
+Release v0.80.0
+
+* Deprecate multiple encoding version support for configurable constants
+* support v1 encoding in program types
+* fee estimation for multicall
+
+### Rust SDK
+
+Release v0.58.0
+
+* feature!: make experimental encoding default
+
+Release [v0.57.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.57.0)
+
+The `BASE_ASSET_ID` constant has been removed and replaced by an new `Provider` function.
+
+```rust
+/* BEFORE */
+let base_asset_id = BASE_ASSET_ID;
+
+/* AFTER */
+let base_asset_id = provider.base_asset_id();
+```
+
+`Config` was renamed to `NodeConfig`
+
+```rust
+/* BEFORE */
+let node_config = Config::default();
+
+/* AFTER */
+let node_config = NodeConfig::default();
+```
+
+`FuelService::start()` now accepts `NodeConfig`, `ChainConfig`, and `StateConfig` as arguments to startup a node.
+
+```rust
+/* BEFORE */
+let server = FuelService::start(Config::default()).await?;
+
+/* AFTER */
+let server = FuelService::start(
+  NodeConfig::default(),
+  ChainConfig::default(),
+  StateConfig::default(),
+)
+.await?;
+```
+
+When instantiating `ConsensusParameters` you must make use of setters.
+
+```rust
+/* BEFORE */
+let consensus_parameters = ConsensusParameters {
+    tx_params,
+    fee_params,
+    ..Default::default()
+};
+
+/* AFTER */
+let mut consensus_parameters = ConsensusParameters::default();
+consensus_parameters.set_tx_params(tx_params);
+consensus_parameters.set_fee_params(fee_params);
+```
+
+Fields now need to be accessed via methods.
+
+```rust
+/* BEFORE */
+let chain_id = consensus_parameters.chain_id;
+
+/* AFTER */
+let chain_id = consensus_parameters.chain_id();
+```
+
+The same applies to other parameter structs used when setting up a node, such as `TxParameters`, `ContractParameters`, `PredicateParameters` etc.
+
+The `witness_index` parameters in `CreateTransactionBuilder::with_bytecode_witness_index` is now a `u16`.
+
+`NodeInfo` no longer has `min_gas_price`.
+
+`CreateTransaction` no longer has `bytecode_length()`.
+
+`Header` no longer has `message_receipt_root`, but gains:
+```rust
+pub message_outbox_root: Bytes32,
+pub event_inbox_root: Bytes32,
+pub consensus_parameters_version: u32,
+pub state_transition_bytecode_version: u32
+```
+
+## March
+
+### Sway
+
+Release [Sway v0.52.0]
+
+* encapsulation for std-lib
+* rename predicate_id() to predicate_address() and add additional predicate docs
+* remove U256
+* expose external code laoding with std::execution::run_external
+
+### TS-SDK
+
+Release v0.79.0
+
+* chore!: remove externalLiggedTypes from Interface class
+
+Release v0.78.0
+
+* feat!: improve signing DX
+
+Release v0.77.0
+
+* chore!: exporting asset types
+* feat!: accept predicate data on the Predicate constructor
+
+### Rust SDK
+
+Release v0.56.0
+
+* feat!: add support for experimental encoding in logs
+* fix!: encoding capacity overflow
+
+## February
+
+### Sway
+
+Release: [Sway v0.51.0]
+
+* turn struct field privacy warnings into errors
+* enforce deterministic order in hashmaps
+* replace unmaintained generational-arena with slotmap
+* implements the Never ! types as a TypeInfo bottom type
+
+Release: [Sway v0.50.0]
+
+* forbid configurables in constants
+* fixes for auto impl of AbiEncode; encoding version and better tests
+* redesign from train into From/Into pair
+* struct field privacy
+
+### TS-SDK
+
+Release: v0.74.0
+
+* remove provider from WalletManager specific types
+* chore!: restructure Account related packages
+
 ## February 5, 2024 (Beta 5)
 
 ### Sway
