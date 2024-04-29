@@ -153,7 +153,7 @@ async fund<T extends TransactionRequest>(
 async fund<T extends TransactionRequest>(request: T, params: EstimatedTxParams): Promise<T>
 ```
 
-Graphql URL now includes a versioning path: `http://127.0.0.1:4000/v1/graphql`.
+GraphQL URL now includes a versioning path: `http://127.0.0.1:4000/v1/graphql`.
 
 `calculateTransactionFee` now requires `tip`, `maxGasPerTx`, and `gasPrice`. Also `gasUsed` is not used anymore.
 
