@@ -58,12 +58,14 @@ let base_asset_id = AssetId:base();
 ```
 
 You can no longer access the following:
+
 - `force_transfer_to_contract()`
 - `transfer_to_address()`
 - `mint_to_contract()`
 - `mint_to_address()`
 
 Instead use the `transfer()`, `mint()`, and `mint_to()` functions accordingly.
+
 ```rust
 /* BEFORE */
 let user = Address:from(address);
@@ -332,12 +334,14 @@ let upper = zero_u128.upper();
 ```
 
 The fields on `StorageKey` have been made private and are now accessed via:
+
 - `new()`
 - `slot()`
 - `offset()`
 - `field_id()`
 
 The following heap types have been updated to have private struct variables:
+
 - `Bytes`
 - `RawBytes`
 - `Vec`
