@@ -119,7 +119,7 @@ const provider = await Provider.create(FUEL_NETWORK_URL);
 const baseAssetId = provider.getBaseAssetId();
 ```
 
-`TransactionRequest.addCoinOutput` and `TransactionRequest.addChangeOutput` now requires an `assetId`, it no longer defaults to the `baseAssetId`.
+`TransactionRequest.addCoinOutput` and `TransactionRequest.addChangeOutput` now requires an `assetId`, it no longer defaults to the `BaseAssetId`.
 
 `TransactionRequest.fundWithFakeUtxos` now requires passing the `baseAssetId` as a function parameter. This is the only function that is base asset aware, so that it can be used specifically to estimate the transaction cost.
 
