@@ -150,6 +150,12 @@ async fund<T extends TransactionRequest>(
 ): Promise<T>
 
 /* AFTER */
+export type EstimatedTxParams = {
+  minFee: BN;
+  estimatedPredicates: TransactionRequestInput[];
+  addedSignatures: number;
+  requiredQuantities: CoinQuantity[];
+}
 async fund<T extends TransactionRequest>(request: T, params: EstimatedTxParams): Promise<T>
 ```
 
