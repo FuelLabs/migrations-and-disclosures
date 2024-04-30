@@ -8,7 +8,7 @@ parent:
 
 # Breaking Changes Log
 
-## April
+## April 30, 2024 (Testnet)
 
 ### Sway
 
@@ -303,7 +303,7 @@ pub consensus_parameters_version: u32,
 pub state_transition_bytecode_version: u32
 ```
 
-## March
+## March 27, 2024
 
 ### Sway
 
@@ -496,7 +496,7 @@ let transaction_cost = contract_instance
   .await?;
 ```
 
-## February
+## February 22, 2024
 
 ### Sway
 
