@@ -123,7 +123,18 @@ const baseAssetId = provider.getBaseAssetId();
 
 `TransactionRequest.fundWithFakeUtxos` now requires passing the `baseAssetId` as a function parameter. This is the only function that is base asset aware, so that it can be used specifically to estimate the transaction cost.
 
-`CoinQuantityLike` now requires an `AssetId`. Previously most of it's usages would default to the `BaseAssetId`, as this must now be fetched, then it must be passed to the type.
+`CoinQuantityLike` now requires an `AssetId`. Previously most of it's usages would default to the `BaseAssetId`, as this must now be fetched, so it must be passed to the type.
+
+```ts
+/* BEFORE */
+let coin: CoinQuantityLike = [1000];
+coin = { amount: 1000 };
+
+/* AFTER */
+const assetId = "0x..";
+let coin: CoinQuantityLike = [1000, assetId];
+coin = { amount: 1000, assetId };
+```
 
 `gasPrice` is calculated by the VM so we do not need use it anymore.
 
