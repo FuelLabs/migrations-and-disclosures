@@ -555,6 +555,41 @@ pub struct Struct {
 }
 ```
 
+The `From` trait has been redesigned into the `From`/`Into` rust-like trait pair.
+
+```rust
+/* BEFORE */
+impl From<b256> for Address {
+  fn from(bits: b256) -> Self {
+    Self { value: bits }
+  }
+
+  fn into(self) -> b256 {
+    self.value
+  }
+}
+
+let address = Address::from(ZERO_B256);
+let b256_data = address.into();
+
+/* AFTER */
+impl From<b256> for Address {
+  fn from(bits: b256) -> Self {
+    Self { value: bits }
+  }
+}
+
+impl From<Address> for b256 {
+  fn from(address: Address) -> b256 {
+    address.value
+  }
+}
+
+let address = Address::from(ZERO_B256);
+let b256_data: b256 = address.into();
+let address: Address = b256_data.into();
+```
+
 ### TS-SDK
 
 Release: [v0.74.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.74.0)
