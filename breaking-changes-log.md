@@ -204,7 +204,7 @@ const { fee } = calculateTransactionFee({
 });
 ```
 
-`AssetId` and `EvmAddress` property `value` was renamed to `bits`.
+Due to `forc` upgrade [v0.52.0](https://github.com/FuelLabs/sway/releases/tag/v0.52.0) `AssetId` and `EvmAddress` property `value` was renamed to `bits`
 
 ```ts
 /* BEFORE */
