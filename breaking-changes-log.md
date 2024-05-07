@@ -37,7 +37,7 @@ pub fn call_with_function_selector_vec(
 ) {...}
 
 /* AFTER */
-pub fn call_with_function_selectoir_vec(
+pub fn call_with_function_selector_vec(
   target: ContractId,
   function_selector: Bytes // new
   calldata: Bytes, // new
