@@ -148,7 +148,7 @@ await factory.deployContract();
 
 `PolicyType.GasPrice` is now `PolicyType.Tip`.
 
-The `Account.fund` function parameters changed.
+The `Account.fund` function parameters changed.  Also the information returned by `Provider.getTransactionCost` is useful here because it can be passed as the second parameter to `Account.fund`.
 
 ```ts
 /* BEFORE */
@@ -162,7 +162,7 @@ async fund<T extends TransactionRequest>(
 
 /* AFTER */
 export type EstimatedTxParams = {
-  minFee: BN;
+  maxFee: BN;
   estimatedPredicates: TransactionRequestInput[];
   addedSignatures: number;
   requiredQuantities: CoinQuantity[];
