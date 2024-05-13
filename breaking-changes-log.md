@@ -14,6 +14,8 @@ parent:
 
 Release: [Sway v0.56.0](https://github.com/FuelLabs/sway/releases/tag/v0.56.0)
 
+The `std::call_frames::second_param` function now returns a `u64` instead of a generic type `T`.
+
 `contract_id()` has been removed in favor of `ContractId::this()`.
 
 ```rust
