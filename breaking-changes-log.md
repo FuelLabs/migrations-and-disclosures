@@ -14,6 +14,8 @@ parent:
 
 Release: [Sway v0.57.0](https://github.com/FuelLabs/sway/releases/tag/v0.57.0)
 
+`fuel-core` was bumped to v0.26.0 making `forc-client` incompatible with previous networks.
+
 A name clash in star imports now results in an error when the name is used.  For example:
 
 ```rust
