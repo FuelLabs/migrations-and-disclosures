@@ -69,3 +69,5 @@ UX
 structs
 const
 Configurables
+asm
+cli
