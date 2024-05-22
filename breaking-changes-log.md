@@ -106,7 +106,7 @@ let function_selector = encode_fn_selector("my_contract_function");
 
 Release [v0.60.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.60.0)
 
-The sdk now expects `release` paths in order to work.
+The SDK now expects `release` paths in order to work.
 
 ```rust
 /* BEFORE */
