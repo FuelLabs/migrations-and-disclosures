@@ -8,6 +8,751 @@ parent:
 
 # Breaking Changes Log
 
+## May 14, 2024 (Testnet)
+
+### Sway
+
+Release: [Sway v0.57.0](https://github.com/FuelLabs/sway/releases/tag/v0.57.0)
+
+`fuel-core` was bumped to v0.26.0 making `forc-client` incompatible with previous networks.
+
+A name clash in star imports now results in an error when the name is used.  For example:
+
+```rust
+// a.sw
+struct X = ...
+
+// b.sw
+struct X = ...
+
+// main.sw
+use a::*;
+use b::*;
+
+let x = X {...} // Error
+```
+
+The asm printing options in the `forc` cli have changed.
+
+| Before | After |
+| - | - |
+|`--intermediate-asm`|`--asm abstract`|
+|`--finalized-asm`|`--asm final`|
+|`--intermediate-asm --finalized-asm`|`--asm all`|
+
+### TS-SDK
+
+Release: [v0.85.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.85.0)
+
+The `__typename` property was removed from all GraphQL types.
+
+The `__typename` property was renamed to `type` on the `CoinFragment` and `MessageCoinFragment` types.
+
+Release [v0.84.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.84.0)
+
+`getNetwork` was removed from `account`.
+
+The type `ConsensusParameters` was modified to match the new GraphQL schema.
+
+```ts
+/* BEFORE */
+type ConsensusParameters = {
+  contractMaxSize: BN;
+  maxInputs: BN;
+  maxOutputs: BN;
+  maxWitnesses: BN;
+  maxGasPerTx: BN;
+  maxScriptLength: BN;
+  maxScriptDataLength: BN;
+  maxStorageSlots: BN;
+  maxPredicateLength: BN;
+  maxPredicateDataLength: BN;
+  maxGasPerPredicate: BN;
+  gasPriceFactor: BN;
+  gasPerByte: BN;
+  maxMessageDataLength: BN;
+  chainId: BN;
+  gasCosts: GqlGasCosts;
+  baseAssetId: string;
+}
+
+/* AFTER */
+type ConsensusParameters = {
+  version: GqlConsensusParametersVersion;
+  chainId: BN;
+  baseAssetId: string;
+  feeParameters: ModifyStringToBN<FeeParameters>;
+  contractParameters: ModifyStringToBN<ContractParameters>;
+  predicateParameters: ModifyStringToBN<PredicateParameters>;
+  scriptParameters: ModifyStringToBN<ScriptParameters>;
+  txParameters: ModifyStringToBN<TxParameters>;
+  gasCosts: GasCosts;
+};
+```
+
+### Rust SDK
+
+Release [v0.61.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.61.0)
+
+Instead of the `fuels::core::fn_selector!` macro you now use `fuels::core::encode_fn_selector` to construct an encoded function selector.
+
+```rust
+/* BEFORE */
+let function_selector = fn_selector!(my_contract_function(MyArgType));
+
+/* AFTER */
+let function_selector = encode_fn_selector("my_contract_function");
+```
+
+Release [v0.60.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.60.0)
+
+The SDK now expects `release` paths in order to work.
+
+```rust
+/* BEFORE */
+let contract_id = Contract::load_from(
+    "my_path/my_contract/out/debug/contract_test.bin",
+    LoadConfiguration::default(),
+)?
+
+/* AFTER */
+let contract_id = Contract::load_from(
+    "my_path/my_contract/out/release/contract_test.bin",
+    LoadConfiguration::default(),
+)?
+```
+
+## April 30, 2024
+
+### Sway
+
+Release: [Sway v0.56.0](https://github.com/FuelLabs/sway/releases/tag/v0.56.0)
+
+The `std::call_frames::second_param` function now returns a `u64` instead of a generic type `T`.
+
+`contract_id()` has been removed in favor of `ContractId::this()`.
+
+```rust
+/* BEFORE */
+let contract_id = contract_id();
+
+/* AFTER */
+let contract_id = ContractId::this();
+```
+
+`call_with_function_selector_vec` has been removed in favor of `call_with_function_selector`.
+
+```rust
+/* BEFORE */
+pub fn call_with_function_selector_vec(
+  target: ContractId,
+  function_selector: Vec<u8>,
+  calldata: Vec<u8>,
+  single_value_type_arg: bool,
+  call_params: CallParams
+) {...}
+
+/* AFTER */
+pub fn call_with_function_selector_vec(
+  target: ContractId,
+  function_selector: Bytes // new
+  calldata: Bytes, // new
+  call_params: CallParams
+) {...}
+```
+
+The `BASE_ASSET_ID` constant has been removed, and `AssetId::base_asset_id()` is now `AssetId::base()`.
+
+```rust
+/* BEFORE */
+let base_asset_id = BASE_ASSET_ID;
+/* OR */
+let base_asset_id = AssetId::base_asset_id();
+
+/* AFTER */
+let base_asset_id = AssetId:base();
+```
+
+You can no longer access the following:
+
+- `force_transfer_to_contract()`
+- `transfer_to_address()`
+- `mint_to_contract()`
+- `mint_to_address()`
+
+Instead use the `transfer()`, `mint()`, and `mint_to()` functions accordingly.
+
+```rust
+/* BEFORE */
+let user = Address:from(address);
+mint_to_address(user, ZERO_B256, amount);
+
+/* AFTER */
+mint_to(Identity::Address(user), ZERO_B256, amount);
+```
+
+The new encoding (encoding v1) is now set by default.  If you would like to build your forc project without v1 encoding then run the following command:
+
+```sh
+forc build --no-encoding-v1
+```
+
+`run_external` in sway-lib-std has been removed until LDC is stabilized.
+
+Release: [Sway v0.55.0](https://github.com/FuelLabs/sway/releases/tag/v0.55.0)
+
+`GTF` constants along with the following functions have been removed to match the current Fuel VM instruction set:
+
+- `input_maturity()`
+- `tx_receipts_root()`
+
+`tx_gas_price` has been renamed `tx_tip`
+
+```rust
+/* BEFORE */
+let gas_price = tx_gas_price();
+
+/* AFTER */
+let tip = tx_tip();
+```
+
+Release: [Sway v0.54.0](https://github.com/FuelLabs/sway/releases/tag/v0.54.0)
+
+The `forc-client` and `forc-tx` plugins now take `u16` instead of `u8` for witness index types.
+
+### TS-SDK
+
+Release [v0.83.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.83.0)
+
+`BaseAssetId` is no longer exported by `fuels`. It can be fetched from a `Provider`.
+
+```ts
+/* BEFORE */
+import { BasedAssetId } from "fuels";
+
+/* AFTER */
+const provider = await Provider.create(FUEL_NETWORK_URL);
+const baseAssetId = provider.getBaseAssetId();
+```
+
+`TransactionRequest.addCoinOutput` and `TransactionRequest.addChangeOutput` now requires an `assetId`, it no longer defaults to the `BaseAssetId`.
+
+`TransactionRequest.fundWithFakeUtxos` now requires passing the `baseAssetId` as a function parameter. This is the only function that is base asset aware, so that it can be used specifically to estimate the transaction cost.
+
+`CoinQuantityLike` now requires an `AssetId`. Previously most of it's usages would default to the `BaseAssetId`, as this must now be fetched, so it must be passed to the type.
+
+```ts
+/* BEFORE */
+let coin: CoinQuantityLike = [1000];
+coin = { amount: 1000 };
+
+/* AFTER */
+const assetId = "0x..";
+let coin: CoinQuantityLike = [1000, assetId];
+coin = { amount: 1000, assetId };
+```
+
+`gasPrice` is calculated by the VM so we do not need use it anymore.
+
+```ts
+/* BEFORE */
+await factory.deployContract({ gasPrice });
+
+/* AFTER */
+await factory.deployContract();
+```
+
+`PolicyType.GasPrice` is now `PolicyType.Tip`.
+
+The `Account.fund` function parameters changed.  Also the information returned by `Provider.getTransactionCost` is useful here because it can be passed as the second parameter to `Account.fund`.
+
+```ts
+/* BEFORE */
+async fund<T extends TransactionRequest>(
+    request: T,
+    coinQuantities: CoinQuantity[],
+    fee: BN,
+    inputsWithEstimatedPredicates: TransactionRequestInput[],
+    addedSignatures?: number
+): Promise<T>
+
+/* AFTER */
+export type EstimatedTxParams = {
+  maxFee: BN;
+  estimatedPredicates: TransactionRequestInput[];
+  addedSignatures: number;
+  requiredQuantities: CoinQuantity[];
+}
+async fund<T extends TransactionRequest>(request: T, params: EstimatedTxParams): Promise<T>
+```
+
+GraphQL URL now includes a versioning path: `http://127.0.0.1:4000/v1/graphql`.
+
+`calculateTransactionFee` now requires `tip`, `maxGasPerTx`, and `gasPrice`. Also `gasUsed` is not used anymore.
+
+```ts
+/* BEFORE */
+const { fee } = calculateTransactionFee({
+  gasUsed,
+  rawPayload,
+  consensusParameters: {
+    gasCosts,
+    feeParams: {
+      gasPerByte,
+      gasPriceFactor,
+    },
+  },
+});
+
+/* AFTER */
+const { fee } = calculateTransactionFee({
+  gasPrice, // new
+  tip, // new
+  consensusParameters: {
+    maxGasPerTx, // new
+    gasCosts,
+    feeParams: {
+      gasPerByte,
+      gasPriceFactor,
+    },
+  },
+  rawPayload,
+});
+```
+
+Due to `forc` upgrade [v0.52.0](https://github.com/FuelLabs/sway/releases/tag/v0.52.0) `AssetId` and `EvmAddress` property `value` was renamed to `bits`
+
+```ts
+/* BEFORE */
+export type EvmAddress = {
+  value: B256AddressEvm;
+};
+export type AssetId = {
+  value: B256Address;
+};
+
+/* AFTER */
+export type EvmAddress = {
+  bits: B256AddressEvm;
+};
+export type AssetId = {
+  bits: B256Address;
+};
+```
+
+Release [v0.80.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.80.0)
+
+Removed unused property `usedFee` from `Provider.getTransactionCost` response.
+
+Renamed `getAssetId` to `getMintedAssetId`.
+
+### Rust SDK
+
+Release [v0.58.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.58.0)
+
+The new encoding is now the default encoding. Use the following command if you would like to run your cargo tests with the legacy encoding.
+
+```sh
+cargo test --features legacy_encoding
+```
+
+Release [v0.57.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.57.0)
+
+The `BASE_ASSET_ID` constant has been removed and replaced by a new `Provider` function.
+
+```rust
+/* BEFORE */
+let base_asset_id = BASE_ASSET_ID;
+
+/* AFTER */
+let base_asset_id = provider.base_asset_id();
+```
+
+`Config` was renamed to `NodeConfig`
+
+```rust
+/* BEFORE */
+let node_config = Config::default();
+
+/* AFTER */
+let node_config = NodeConfig::default();
+```
+
+`FuelService::start()` now accepts `NodeConfig`, `ChainConfig`, and `StateConfig` as arguments to startup a node.
+
+```rust
+/* BEFORE */
+let server = FuelService::start(Config::default()).await?;
+
+/* AFTER */
+let server = FuelService::start(
+  NodeConfig::default(),
+  ChainConfig::default(),
+  StateConfig::default(),
+)
+.await?;
+```
+
+When instantiating `ConsensusParameters` you must make use of setters.
+
+```rust
+/* BEFORE */
+let consensus_parameters = ConsensusParameters {
+    tx_params,
+    fee_params,
+    ..Default::default()
+};
+
+/* AFTER */
+let mut consensus_parameters = ConsensusParameters::default();
+consensus_parameters.set_tx_params(tx_params);
+consensus_parameters.set_fee_params(fee_params);
+```
+
+Fields now need to be accessed via methods.
+
+```rust
+/* BEFORE */
+let chain_id = consensus_parameters.chain_id;
+
+/* AFTER */
+let chain_id = consensus_parameters.chain_id();
+```
+
+The same applies to other parameter structs used when setting up a node, such as `TxParameters`, `ContractParameters`, `PredicateParameters` etc.
+
+The `witness_index` parameters in `CreateTransactionBuilder::with_bytecode_witness_index` are now a `u16`.
+
+`NodeInfo` no longer has `min_gas_price`.
+
+`CreateTransaction` no longer has `bytecode_length()`.
+
+`Header` no longer has `message_receipt_root`, but gains:
+
+```rust
+pub message_outbox_root: Bytes32,
+pub event_inbox_root: Bytes32,
+pub consensus_parameters_version: u32,
+pub state_transition_bytecode_version: u32
+```
+
+## March 27, 2024
+
+### Sway
+
+Release [Sway v0.52.0](https://github.com/FuelLabs/sway/releases/tag/v0.52.0)
+
+The `bytes` field on `B512` and the `value` field `EvmAddress` have been renamed `bits`, made private, and made accessible via `bits()`.
+
+```rust
+/* BEFORE */
+let bytes = myB12.bytes;
+let value = myEvmAddress.value;
+
+/* AFTER */
+let bits = myB512.bits();
+let bits = myEvmAddress.bits();
+```
+
+The fields on `U128` have been made private.
+
+```rust
+/* BEFORE */
+let zero_u128 = U128 { upper: 0, lower: 0 };
+let upper = zero_u128.upper;
+
+/* AFTER */
+let zero_u128 = U128::from(0, 0);
+let upper = zero_u128.upper();
+```
+
+The fields on `StorageKey` have been made private and are now accessed via:
+
+- `new()`
+- `slot()`
+- `offset()`
+- `field_id()`
+
+The following heap types have been updated to have private struct variables:
+
+- `Bytes`
+- `RawBytes`
+- `Vec`
+- `RawVec`
+- `String`
+
+```rust
+/* BEFORE */
+let bytes_ptr = bytes.buf.ptr();
+
+/* AFTER */
+let bytes_ptr = bytes.ptr();
+```
+
+The `value` field on `AssetId`, `ContractId`, and `Address` is now private and renamed `bits`.
+
+```rust
+/* BEFORE */
+let value = assetId.value;
+
+/* AFTER */
+let bits = assetId.bits();
+```
+
+`predicate_id()` has been renamed to `predicate_address()`.
+
+```rust
+/* BEFORE */
+let predicate = predicate_id();
+
+/* AFTER */
+let predicate = predicate_address();
+```
+
+`U256` has been removed use the native `u256` type instead.
+
+```rust
+/* BEFORE */
+let my_U256 = U256::max();
+
+/* AFTER */
+let my_u256 = u256::max();
+```
+
+### TS-SDK
+
+Release [v0.79.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.79.0)
+
+`externalLoggedTypes` has been removed from the `Interface` class.
+
+Release [v0.77.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.77.0)
+
+Predicate data is now accepted on the `Predicate` constructor.
+
+```ts
+/* BEFORE */
+const predicate = new Predicate(bytecode, provider, abi, configurableConstants);
+
+/* AFTER */
+const predicate = new Predicate({
+  bytecode,
+  abi, // optional
+  provider,
+  inputData, // optional
+  configurableConstants, // optional
+});
+```
+
+The `setData` method has been removed from `Predicate`. If you want to pass in predicate data after instantiating the `Predicate` or if you want to use different data than what was passed to the constructor, then you will have to create a new `Predicate` instance.
+
+### Rust SDK
+
+Release [v0.56.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.56.0)
+
+Experimental encoding for logs was added. Use the following command to run your tests with the experimental encoding
+
+```sh
+cargo test --features experimental
+```
+
+**_NOTE_** experimental encoding is now the default encoding in [v0.57.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.57.0)
+
+`Configurables` structs now need to be instantiated through a `::new(encoder_config)` or `::default()` method.
+
+```rust
+/* BEFORE */
+let configurables = MyContractConfigurables::new().with_STRUCT(my_struct);
+
+/* AFTER */
+let configurables = MyContractConfigurables::default().with_STRUCT(my_struct);
+/* OR */
+let configurables = MyContractConfigurables::new(encoder_config).with_STRUCT(my_struct);
+```
+
+`Configurables::with_some_string_config(some_string)` methods now return a `Result<Configurables>` instead of `Configurables`.
+
+`Predicates::encode_data` now returns a `Result<UnresolvedBytes>` instead of `UnresolvedBytes`.
+
+`AbiEncoder` structs must be instantiated through a `::new(encoder_config)` or `::default()` method.
+
+```rust
+/* BEFORE */
+let encoded = ABIEncoder::encode(&args).resolve(0);
+
+/* AFTER */
+let encoded = ABIEncoder::default().encode(&args).resolve(0);
+/* OR */
+let encoded = ABIEncoder::new(config).encode(&args).resolve(0);
+```
+
+`EnumVariants` are now imported through `param_types::EnumVariants`.
+
+```rust
+/* BEFORE */
+use fuels::types::enum_variants::EnumVariants;
+
+/* AFTER */
+use fuels::types::param_types::EnumVariants;
+```
+
+`TxPolicies` `gas_price` is replaced with `tip`
+
+```rust
+/* BEFORE */
+let tx_policies = TXPolicies::default().with_gas_price(1);
+
+/* AFTER */
+let tx_policies = TXPolicies::default().with_tip(1);
+```
+
+`checked_dry_run` has been removed from `Provider`.
+
+`dry_run` now returns `Result<TxStatus>` instead of `Result<Vec<Receipt>>`. The receipts can be taken with `tx_status.take_receipts()`.
+
+`TransactionResponse`'s `block_id` is replaced with `block_height`.
+
+`estimate_transaction_cost` has a new argument `block_horizon: Option<u32>`.
+
+```rust
+/* BEFORE */
+let transaction_cost = contract_instance
+  .methods()
+  .my_contract_call()
+  .estimate_transaction_cost(Some(tolerance))
+  .await?;
+
+/* AFTER */
+let transaction_cost = contract_instance
+  .methods()
+  .my_contract_call()
+  .estimate_transaction_cost(tolerance, block_horizon)
+  .await?;
+```
+
+## February 22, 2024
+
+### Sway
+
+Release: [Sway v0.51.0](https://github.com/FuelLabs/sway/releases/tag/v0.51.0)
+
+You can no longer access private fields in structs.
+
+```rust
+/* BEFORE */
+let private = my_struct.private // just a warning
+
+/* AFTER */
+let private = my_struct.private // ERROR
+let private = my_struct.private() // you must create a function to access private variables
+```
+
+The `Never` type is now `!`.
+
+```rust
+/* BEFORE */
+let x: NEVER = { return 123 };
+
+/* AFTER */
+let x: ! = { return 123 };
+```
+
+Release: [Sway v0.50.0](https://github.com/FuelLabs/sway/releases/tag/v0.50.0)
+
+Configurables are now forbidden in const expressions.
+
+```rust
+// Not allowed
+script;
+
+configurable {
+    VALUE: u64 = 42,
+}
+
+fn main() {
+    const CONSTANT: u64 = VALUE;
+}
+```
+
+Struct fields are now private by default.  You must explicitly mark a field public.
+
+```rust
+/* BEFORE */
+pub struct Struct {
+  public_field: u8,
+}
+
+/* AFTER */
+pub struct Struct {
+  pub public_field: u8,
+  private_field: u8,
+}
+```
+
+The `From` trait has been redesigned into the `From`/`Into` rust-like trait pair.
+
+```rust
+/* BEFORE */
+impl From<b256> for Address {
+  fn from(bits: b256) -> Self {
+    Self { value: bits }
+  }
+
+  fn into(self) -> b256 {
+    self.value
+  }
+}
+
+let address = Address::from(ZERO_B256);
+let b256_data = address.into();
+
+/* AFTER */
+impl From<b256> for Address {
+  fn from(bits: b256) -> Self {
+    Self { value: bits }
+  }
+}
+
+impl From<Address> for b256 {
+  fn from(address: Address) -> b256 {
+    address.value
+  }
+}
+
+let address = Address::from(ZERO_B256);
+let b256_data: b256 = address.into();
+let address: Address = b256_data.into();
+```
+
+### TS-SDK
+
+Release: [v0.74.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.74.0)
+
+`Provider` has been removed from `WalletManager` types.
+
+```ts
+/* Before */
+const vault = new MnemonicVault({
+  secret: mnemonic,
+  provider,
+});
+
+/* After */
+const vault = new MnemonicVault({
+  secret: mnemonic,
+});
+```
+
+The Account and account related packages have been restructured. Anything imported from the following packages will now be imported from `@fuel-ts/account`
+
+- `@fuel-ts/hdwallet`
+- `@fuel-ts/mnemonic`
+- `@fuel-ts/predicate`
+- `@fuel-ts/providers`
+- `@fuel-ts/signer`
+- `@fuel-ts/wallet-manager`
+- `@fuel-ts/wallet`
+- `@fuel-ts/wordlists`
+
 ## February 5, 2024 (Beta 5)
 
 ### Sway
@@ -124,7 +869,9 @@ fn foo() {
   assert(result[1] == 2_u8);
 }
 ```
+
 <!-- markdownlint-disable md029 -->
+
 2. [Array conversions](https://github.com/FuelLabs/sway/tree/master/sway-lib-std/src/array_conversions)
 
 ```sway
@@ -137,6 +884,7 @@ fn foo() {
   assert(result.get(1).unwrap() == 2_u8);
 }
 ```
+
 <!-- markdownlint-enable md029 -->
 
 Power uses a `u32` instead of self
@@ -159,13 +907,13 @@ Several `fuel-core` configuration-related options have been removed from the `La
 /* BEFORE - v0.60.0 */
 const { cleanup, ip, port } = await launchNode({
   chainConfigPath,
-  consensusKey = '0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298',
+  consensusKey = "0xa449b1ffee0e2205fa924c6740cc48b3b473aa28587df6dab12abc245d1f5298",
   args: defaultFuelCoreArgs,
 });
 
 /* AFTER - v0.73.0 */
 const { cleanup, ip, port } = await launchNode({
-  args: ['--poa-instant', 'false', '--poa-interval-period', '400ms'],
+  args: ["--poa-instant", "false", "--poa-interval-period", "400ms"],
 });
 ```
 
@@ -176,19 +924,22 @@ Contract calls requires `gasLimit` and `gasPrice` to be specified in `txParams()
 let resp = await contract.functions.count().simulate();
 
 /* AFTER - v0.73.0 */
-let resp = await contract.functions.count().txParams({ gasPrice: 1, gasLimit: 100_000 }).simulate();
+let resp = await contract.functions
+  .count()
+  .txParams({ gasPrice: 1, gasLimit: 100_000 })
+  .simulate();
 ```
 
 `chainInfoCache` and `nodeInfoCache` are now private methods, to prevent users from accessing invalid cached information after it becomes stale.
 
 ```typescript
 /* BEFORE - v0.60.0 */
-Provider.chainInfoCache[FUEL_NETWORK_URL]
-Provider.nodeInfoCache[FUEL_NETWORK_URL]
+Provider.chainInfoCache[FUEL_NETWORK_URL];
+Provider.nodeInfoCache[FUEL_NETWORK_URL];
 
 /* AFTER - v0.73.0 */
-provider.getChain()
-provider.getNode()
+provider.getChain();
+provider.getNode();
 ```
 
 The `switchURL()` method, used to update the URL for the provider, is now named `connect()`.
@@ -212,21 +963,27 @@ const { value } = await contract.functions.bytes_comparison(bytes).simulate();
 ```
 
 <!-- markdownlint-disable md029 -->
+
 2. Raw Slices
 
 ```typescript
 /* AFTER - v0.73.0 */
 const rawSlice = [40, 41, 42];
-const { value } = await contract.functions.raw_slice_comparison(rawSlice).simulate();
+const { value } = await contract.functions
+  .raw_slice_comparison(rawSlice)
+  .simulate();
 ```
 
 3. StdString
 
 ```typescript
 /* AFTER - v0.73.0 */
-const stdString = 'Hello World';
-const { value } = await contract.functions.string_comparison(stdString).simulate();
+const stdString = "Hello World";
+const { value } = await contract.functions
+  .string_comparison(stdString)
+  .simulate();
 ```
+
 <!-- markdownlint-enable md029 -->
 
 Typegen attempts to resolve, auto-load, and embed the Storage Slots for your Contract within the `MyContract__factory` class. However, you can override this, along with other options, when calling the `deployContract` method:
@@ -244,18 +1001,26 @@ const contract = await MyContract__factory.deployContract(bytecode, wallet, {
 
 ```typescript
 /* BEFORE - v0.60.0 */
-import {concat, arrayify, hexlify } from '@ethersproject/bytes';
-      
-const someBytes = concat([new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6]), new Uint8Array([7, 8, 9])]);
-const someHex = hexlify(new Uint8Array([0, 1, 2, 3]))
-const someArray = arrayify(new Uint8Array([0, 1, 2, 3]))
+import { concat, arrayify, hexlify } from "@ethersproject/bytes";
+
+const someBytes = concat([
+  new Uint8Array([1, 2, 3]),
+  new Uint8Array([4, 5, 6]),
+  new Uint8Array([7, 8, 9]),
+]);
+const someHex = hexlify(new Uint8Array([0, 1, 2, 3]));
+const someArray = arrayify(new Uint8Array([0, 1, 2, 3]));
 
 /* AFTER - v0.73.0 */
-import {concat, arrayify, hexlify } from '@fuel-ts/utils';
+import { concat, arrayify, hexlify } from "@fuel-ts/utils";
 
-const someBytes = concat([new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6]), new Uint8Array([7, 8, 9])]);
-const someHex = hexlify(new Uint8Array([0, 1, 2, 3]))
-const someArray = arrayify(new Uint8Array([0, 1, 2, 3]))
+const someBytes = concat([
+  new Uint8Array([1, 2, 3]),
+  new Uint8Array([4, 5, 6]),
+  new Uint8Array([7, 8, 9]),
+]);
+const someHex = hexlify(new Uint8Array([0, 1, 2, 3]));
+const someArray = arrayify(new Uint8Array([0, 1, 2, 3]));
 ```
 
 `Address` types can no longer be used directly to represent a `b256` and must instead use the `toB256()` conversion method.
@@ -266,22 +1031,18 @@ const addressId = {
   value: userWallet.address,
 };
 
-tokenContract.functions.transfer_coins_to_output(
-  addressId,
-  assetId,
-  amount
-).call()
+tokenContract.functions
+  .transfer_coins_to_output(addressId, assetId, amount)
+  .call();
 
 /* AFTER - v0.73.0 */
 const addressId = {
   value: userWallet.address.toB256(),
 };
 
-tokenContract.functions.transfer_coins_to_output(
-  addressId,
-  assetId,
-  amount
-).call()
+tokenContract.functions
+  .transfer_coins_to_output(addressId, assetId, amount)
+  .call();
 ```
 
 The `Account` class's `fund()` method now takes in two new parameters: `quantities` and `fee`, of types `CoinQuantity[]` and `BN`, respectively. These can be derived from the provider's `getTransactionCost()` method.
@@ -291,7 +1052,9 @@ The `Account` class's `fund()` method now takes in two new parameters: `quantiti
 await wallet.fund(transactionRequest);
 
 /* AFTER - v0.73.0 */
-const { maxFee, requiredQuantities } = await provider.getTransactionCost(transactionRequest);
+const { maxFee, requiredQuantities } = await provider.getTransactionCost(
+  transactionRequest
+);
 
 await wallet.fund(transactionRequest, quantities, fee);
 ```
@@ -300,27 +1063,43 @@ The `provider`'s `getTransactionCost` now breaks down its old `fee` into `minFee
 
 ```typescript
 /* BEFORE - v0.60.0 */
-const { fee } = await this.account.provider.getTransactionCost(transactionRequest);
+const { fee } = await this.account.provider.getTransactionCost(
+  transactionRequest
+);
 
 /* AFTER - v0.73.0 */
-const { requiredQuantities, receipts, minGas, maxGas, minFee, maxFee, usedFee } = await this.account.provider.getTransactionCost(transactionRequest);
+const {
+  requiredQuantities,
+  receipts,
+  minGas,
+  maxGas,
+  minFee,
+  maxFee,
+  usedFee,
+} = await this.account.provider.getTransactionCost(transactionRequest);
 ```
 
 The `getTransferOperations` function now takes in a `receipts` parameter as well, ensuring that contract transactions return the transfer asset.
 
 ```typescript
 /* BEFORE - v0.60.0 */
-const operations = getTransferOperations({inputs: [], outputs: []});
+const operations = getTransferOperations({ inputs: [], outputs: [] });
 
 /* AFTER - v0.73.0 */
-const operations = getTransferOperations({inputs: [], outputs: [], receipts: []});
+const operations = getTransferOperations({
+  inputs: [],
+  outputs: [],
+  receipts: [],
+});
 ```
 
 The predicate introduces a new `getTransferTxId`, a method to calculate the transaction ID for a `Predicate.transfer` transaction.
 
 ```typescript
 /* AFTER - v0.73.0 */
-const txId = await predicate.getTransferTxId(address, amount, BaseAssetId, {gasPrice});
+const txId = await predicate.getTransferTxId(address, amount, BaseAssetId, {
+  gasPrice,
+});
 ```
 
 The `deployContract` method contains a new parameter, `storageSlotsPath`, to avoid issues that may arise if storage slots are not auto-loaded. Without auto-loading, some contracts will revert due to improper or missing initialization of storage slots.
@@ -492,17 +1271,17 @@ Release: [TS SDK v0.60.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.6
 
 ```typescript
 /* BEFORE - v0.57.0 */
-const provider = new Provider(url)
+const provider = new Provider(url);
 
 /* AFTER - v0.60.0 */
-const provider = await Provider.create(url)
+const provider = await Provider.create(url);
 ```
 
 All of these methods now require a `Provider` to be passed in:
 
 #### Wallet Methods
 
-Some of these methods used to accept a URL instead of a `Provider` object. Note that the `provider` parameter *has* to be a `Provider` object now.
+Some of these methods used to accept a URL instead of a `Provider` object. Note that the `provider` parameter _has_ to be a `Provider` object now.
 
 ```typescript
 const provider = await Provider.create(url);
@@ -608,10 +1387,10 @@ export type VaultConfig = {
 The `provider` is no longer optional. Note the change in parameter order, and that `chainId` is no longer required to be passed.
 
 ```typescript
-/* BEFORE - v0.57.0 */ 
+/* BEFORE - v0.57.0 */
 const predicate = new Predicate(bytes, chainId, jsonAbi);
 
-/* AFTER - v0.60.0 */ 
+/* AFTER - v0.60.0 */
 const predicate = new Predicate(bytes, provider, jsonAbi);
 ```
 
@@ -671,21 +1450,27 @@ The reason we have a distinct method for adding predicate resources is that the 
 
 ```typescript
 /* BEFORE - v0.55.0 */
-const predicateInputs: TransactionRequestInput[] = predicateUtxos.map((utxo) => ({
-  id: utxo.id,
-  type: InputType.Coin,
-  amount: utxo.amount,
-  assetId: utxo.assetId,
-  owner: utxo.owner.toB256(),
-  txPointer: '0x00000000000000000000000000000000',
-  witnessIndex: 0,
-  maturity: 0,
-  predicate: predicate.bytes,
-  predicateData: predicate.predicateData,
-}));
+const predicateInputs: TransactionRequestInput[] = predicateUtxos.map(
+  (utxo) => ({
+    id: utxo.id,
+    type: InputType.Coin,
+    amount: utxo.amount,
+    assetId: utxo.assetId,
+    owner: utxo.owner.toB256(),
+    txPointer: "0x00000000000000000000000000000000",
+    witnessIndex: 0,
+    maturity: 0,
+    predicate: predicate.bytes,
+    predicateData: predicate.predicateData,
+  })
+);
 
 /* AFTER - v0.57.0 */
-request.addPredicateResources(predicateUtxos, predicate.bytes, predicate.predicateData)
+request.addPredicateResources(
+  predicateUtxos,
+  predicate.bytes,
+  predicate.predicateData
+);
 ```
 
 ### Rust SDK

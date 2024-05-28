@@ -66,3 +66,8 @@ tx
 LW
 GTF
 UX
+structs
+const
+Configurables
+asm
+cli
