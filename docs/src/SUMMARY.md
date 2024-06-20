@@ -3,4 +3,4 @@
 [Network Breaking Changes](./index.md)
 
 - [Sepolia Testnet (Current)](./sepolia-testnet.md)
-- [Betas Testnet (Archive)](./betas-test.md)
+- [Betas Testnet (Archive)](./betas-testnet.md)
