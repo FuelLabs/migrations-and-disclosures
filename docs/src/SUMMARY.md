@@ -2,5 +2,5 @@
 
 [Network Breaking Changes](./index.md)
 
-- [Sepolia Testnet (Current)](./sepolia-testnet.md)
-- [Betas Testnet (Archive)](./betas-testnet.md)
+- [Sepolia Testnet](./sepolia-testnet-breaking-changes.md)
+- [Betas Testnet](./betas-testnet-breaking-changes.md)
