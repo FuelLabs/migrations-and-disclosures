@@ -1,3 +1,3 @@
-# breaking-change-log
+# Migrations and disclosures
 
-Monthly consolidated breaking change log across the Fuel stack.
+Consolidated breaking change log and disclosures across the Fuel stack and.
