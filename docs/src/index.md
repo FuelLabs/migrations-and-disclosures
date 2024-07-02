@@ -1,4 +1,4 @@
-# Breaking Change Notices
+# Migrations and Disclosures
 
 Throughout Fuel's development journey, numerous testnets have been created to ensure a seamless transition to the mainnet launch.
 Given the dynamic nature of learning and adapting during these testing phases, it's common to encounter breaking changes.
