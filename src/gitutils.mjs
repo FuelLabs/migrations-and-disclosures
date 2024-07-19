@@ -96,7 +96,7 @@ export async function createPR(title, branchName) {
 
   await octokit.pulls.create({
     owner: 'FuelLabs',
-    repo: 'docs-hub',
+    repo: 'migrations-and-disclosures',
     title,
     head: branchName,
     base: 'master',
