@@ -1,4 +1,4 @@
-name: Daily Script Run
+name: Migrations Daily Check
 
 on:
   schedule:
@@ -18,10 +18,13 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Install pnpm
+        run: npm install -g pnpm
+
       - name: Install dependencies
         run: pnpm install
 
       - name: Run the script
-        run: pnpm start --from-workflow
+        run: pnpm docs:update
         env:
           GITHUB_TOKEN: ${{ secrets.MIGRATIONS_BOT }}
