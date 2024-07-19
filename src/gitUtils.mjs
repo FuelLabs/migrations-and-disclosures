@@ -91,7 +91,7 @@ export async function checkDiff() {
 
 export async function createPR(title, branchName) {
   const githubToken = process.env.GITHUB_TOKEN;
-  const octokit = getOctokit(githubToken);
+  const octokit = new Octokit({ auth: githubToken });
   const body = 'This is an automated PR to update the nightly docs.';
 
   await octokit.pulls.create({
