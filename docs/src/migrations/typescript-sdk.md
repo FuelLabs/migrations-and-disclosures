@@ -15,6 +15,7 @@ const { transactionId, waitForResult } = await contract.functions.xyz().call();
 
 const { logs, value, transactionResult } = await waitForResult();
 ```
+
 ### Made `deployContract` a non-blocking call
 
   The `deployContract` method no longer returns the contract instance directly. Instead, it returns an object containing the `transactionId` , the `contractId`, and a `waitForResult` function.
@@ -35,10 +36,11 @@ const { waitForResult, transactionId, contractId } = await factory.deployContrac
 const { contract, transactionResult } = await waitForResult();
 
 const { value } = await contract.functions.xyz().call();
+
 ```
 ### Implement pagination for `Account` methods
 
-  ```ts
+```ts
 // before
 const coins = await myWallet.getCoins(baseAssetId); 
 const messages = await myWallet.getMessages();
@@ -81,4 +83,3 @@ const dryRunResult: DryRunResult = await contract.functions.xyz().get()
 const dryRunResult: DryRunResult = await contract.functions.xyz().dryRun()
 const dryRunResult: DryRunResult = await contract.functions.xyz().simulate()
 ```
-
