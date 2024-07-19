@@ -38,17 +38,14 @@ export async function extractRelease(moduleApiUrl, moduleFilePath, language) {
 
         const response = await axios.get(moduleApiUrl);
         const releases = response.data;
-        console.log('Fetched releases:', releases);
 
         // Filter releases to include only those after the starting version
         const filteredReleases = releases.filter(release => {
             return semver.gt(release.tag_name, currVersion);
         });
-        console.log('Filtered releases:', filteredReleases);
 
         // Extract the new changes
         const newChanges = await extractNewChanges(currFileContent, filteredReleases, currVersion, language);
-        console.log('Extracted new changes:', newChanges);
 
         if (newChanges) {
             currFileContent = currFileContent.split('\n');
@@ -70,7 +67,6 @@ export async function readLogFile(logFilePath) {
     if (fs.existsSync(logFilePath)) {
         logFileContent = fs.readFileSync(logFilePath, 'utf8');
     }
-    console.log('Current file content:', logFileContent);
     return logFileContent;
 }
 
