@@ -19,6 +19,7 @@ const { transactionId, waitForResult } = await contract.functions.xyz().call();
 
 const { logs, value, transactionResult } = await waitForResult();
 ```
+
 ### Made `deployContract` a non-blocking call [#2597](https://github.com/FuelLabs/fuels-ts/pull/2597)
 
   The `deployContract` method no longer returns the contract instance directly. Instead, it returns an object containing the `transactionId` , the `contractId`, and a `waitForResult` function.
@@ -40,6 +41,7 @@ const { contract, transactionResult } = await waitForResult();
 
 const { value } = await contract.functions.xyz().call();
 ```
+
 ### Implement pagination for `Account` methods [#2408](https://github.com/FuelLabs/fuels-ts/pull/2408)
 
 ```ts
