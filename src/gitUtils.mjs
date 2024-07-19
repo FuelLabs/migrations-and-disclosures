@@ -1,5 +1,5 @@
 import { exec } from '@actions/exec';
-import { getOctokit } from '@actions/github';
+import { Octokit } from '@octokit/rest';
 
 export const setupUser = async () => {
   await exec('git', ['config', 'user.name', `"github-actions[bot]"`]);
