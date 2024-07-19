@@ -36,8 +36,8 @@ const { waitForResult, transactionId, contractId } = await factory.deployContrac
 const { contract, transactionResult } = await waitForResult();
 
 const { value } = await contract.functions.xyz().call();
-
 ```
+
 ### Implement pagination for `Account` methods
 
 ```ts
