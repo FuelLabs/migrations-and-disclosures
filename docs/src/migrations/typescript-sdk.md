@@ -1,10 +1,10 @@
 # TypeScript SDK Migrations Guide
+
 ## July 11, 2024
 
 Release [v0.92.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.92.0)
 
-## Features
-### [#2692 - Implement non-blocking contract call](https://github.com/FuelLabs/fuels-ts/pull/2692)
+### Implement non-blocking contract call [#2692](https://github.com/FuelLabs/fuels-ts/pull/2692)
 
   The `call` method in the `BaseInvocationScope` class no longer waits for transaction execution, making it non-blocking. This change affects how transaction responses are handled.
 
@@ -19,7 +19,7 @@ const { transactionId, waitForResult } = await contract.functions.xyz().call();
 
 const { logs, value, transactionResult } = await waitForResult();
 ```
-### [#2597 - Made `deployContract` a non-blocking call](https://github.com/FuelLabs/fuels-ts/pull/2597)
+### Made `deployContract` a non-blocking call [#2597](https://github.com/FuelLabs/fuels-ts/pull/2597)
 
   The `deployContract` method no longer returns the contract instance directly. Instead, it returns an object containing the `transactionId` , the `contractId`, and a `waitForResult` function.
 
@@ -30,9 +30,7 @@ const factory = new ContractFactory(contractByteCode, contractAbi, wallet);
 const contract = await factory.deployContract();
 
 const { value } = await contract.functions.xyz().call();
-```
 
-```ts
 // after
 const factory = new ContractFactory(contractByteCode, contractAbi, wallet);
 
@@ -42,9 +40,9 @@ const { contract, transactionResult } = await waitForResult();
 
 const { value } = await contract.functions.xyz().call();
 ```
-### [#2408 - Implement pagination for `Account` methods](https://github.com/FuelLabs/fuels-ts/pull/2408)
+### Implement pagination for `Account` methods [#2408](https://github.com/FuelLabs/fuels-ts/pull/2408)
 
-  ```ts
+```ts
 // before
 const coins = await myWallet.getCoins(baseAssetId); 
 const messages = await myWallet.getMessages();
@@ -63,13 +61,11 @@ const { blocks, pageInfo } = await provider.getBlocks();
 */
 ```
 
-## Fixes
-### [#2718 - `launchNode.cleanup` not killing node in last test of test group](https://github.com/FuelLabs/fuels-ts/pull/2718)
+### `launchNode.cleanup` not killing node in last test of test group - [#2718](https://github.com/FuelLabs/fuels-ts/pull/2718)
 
   The `killNode` and `KillNodeParams` functionality has been internalized and the method and interface have been deleted so they're no longer exported.  It's marked as a breaking change for pedantic reasons and there shouldn't really be any affected users given that they kill nodes via `cleanup` which is unchanged, so no migration notes are necessary.
 
-## Chores
-### [#2652 - Remove `InvocationResult` from `program` package](https://github.com/FuelLabs/fuels-ts/pull/2652)
+### Remove `InvocationResult` from `program` package - [#2652](https://github.com/FuelLabs/fuels-ts/pull/2652)
 
   The classes `FunctionInvocationResult`, `InvocationCallResult`, and `InvocationResult` have been removed. This change will not affect most users as the response for a contract call or script call remains the same; only the type name has changed.
 
@@ -89,4 +85,3 @@ const dryRunResult: DryRunResult = await contract.functions.xyz().get()
 const dryRunResult: DryRunResult = await contract.functions.xyz().dryRun()
 const dryRunResult: DryRunResult = await contract.functions.xyz().simulate()
 ```
-

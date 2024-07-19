@@ -85,17 +85,26 @@ export async function extractNewChanges(logContent, releases, startingVersion, l
         });
 
         if (breakingChangesSection && !logEntries.includes(`Release [${release.tag_name}](${release.html_url})`)) {
-            newEntries = `## ${releaseDate}\n\nRelease [${release.tag_name}](${release.html_url})\n\n${breakingChangesSection}\n\n` + newEntries;
+            newEntries = `## ${releaseDate}\n\n[Release ${release.tag_name}](${release.html_url})\n\n${breakingChangesSection}\n\n` + newEntries;
             if (semver.gt(release.tag_name, latestVersion)) {
                 latestVersion = release.tag_name;
             }
         }
     });
 
+    // Filter out specific sections
+    const filteredEntries = filterOutSections(newEntries);
+
     // Update the latest version for the specific language
     await updateVersionFile(language, latestVersion);
 
-    return newEntries;
+    return filteredEntries;
+}
+
+// Function to filter out specific sections from the entries
+function filterOutSections(content) {
+    const sectionsToExclude = ['## Features', '## Fixes', '## Chores', '## Docs', '## CI', '## Misc'];
+    return content.split('\n').filter(line => !sectionsToExclude.some(section => line.startsWith(section))).join('\n');
 }
 
 // Function to update the version file for a specific language
