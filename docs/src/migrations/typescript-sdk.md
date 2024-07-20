@@ -4,7 +4,7 @@
 
 Release [v0.92.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.92.0)
 
-### Implement non-blocking contract call [#2692](https://github.com/FuelLabs/fuels-ts/pull/2692)
+### Implement non-blocking contract call - [#2692](https://github.com/FuelLabs/fuels-ts/pull/2692)
 
   The `call` method in the `BaseInvocationScope` class no longer waits for transaction execution, making it non-blocking. This change affects how transaction responses are handled.
 
@@ -20,7 +20,7 @@ const { transactionId, waitForResult } = await contract.functions.xyz().call();
 const { logs, value, transactionResult } = await waitForResult();
 ```
 
-### Made `deployContract` a non-blocking call [#2597](https://github.com/FuelLabs/fuels-ts/pull/2597)
+### Made `deployContract` a non-blocking call - [#2597](https://github.com/FuelLabs/fuels-ts/pull/2597)
 
   The `deployContract` method no longer returns the contract instance directly. Instead, it returns an object containing the `transactionId` , the `contractId`, and a `waitForResult` function.
 
@@ -42,7 +42,7 @@ const { contract, transactionResult } = await waitForResult();
 const { value } = await contract.functions.xyz().call();
 ```
 
-### Implement pagination for `Account` methods [#2408](https://github.com/FuelLabs/fuels-ts/pull/2408)
+### Implement pagination for `Account` methods - [#2408](https://github.com/FuelLabs/fuels-ts/pull/2408)
 
 ```ts
 // before
