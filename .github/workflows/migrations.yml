@@ -1,10 +1,6 @@
 name: Update Nightly Versions
 
 on:
-    schedule:
-      # This runs at 12:00 UTC every day Monday through Friday
-      - cron: '0 12 * * 1-5'
-    # Option to run the workflow manually
     workflow_dispatch: 
     repository_dispatch:
       types: [update_versions]
