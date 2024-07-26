@@ -6,6 +6,8 @@ on:
       - cron: '0 12 * * 1-5'
     # Option to run the workflow manually
     workflow_dispatch: 
+    repository_dispatch:
+      types: [update_versions]
 
 env:
   GITHUB_TOKEN: ${{ secrets.MIGRATIONS_BOT }}
