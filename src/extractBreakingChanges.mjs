@@ -140,5 +140,18 @@ export function extractBreakingChanges(content) {
     const endIndex = lines.slice(startIndex + 1).findIndex(line => line.startsWith('# '));
     const endPosition = endIndex === -1 ? lines.length : startIndex + 1 + endIndex;
 
-    return lines.slice(startIndex + 1, endPosition).join('\n').trim();
+    // Extract the section content
+    let sectionContent = lines.slice(startIndex + 1, endPosition).join('\n').trim();
+
+    // Replace all `###` subtitles with the desired format
+    sectionContent = sectionContent.replace(/^### \[(#\d+) - (.+?)\]\((.+?)\)/gm, (match, prNumber, title, url) => {
+        return `### ${title} - [${prNumber}](${url})`;
+    });
+
+    // Ensure there is a blank line before each `###` subtitle
+    sectionContent = sectionContent.replace(/(^|\n)(### .+)/g, (match, newline, subtitle) => {
+        return `${newline.trim()}\n\n${subtitle}`;
+    }).trim();
+
+    return sectionContent;
 }
