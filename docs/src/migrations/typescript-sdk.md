@@ -1,5 +1,67 @@
 # TypeScript SDK Migrations Guide
 
+## July 30, 2024
+
+[Release v0.93.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.93.0)
+
+### [#2796 - Deploy contract validation](https://github.com/FuelLabs/fuels-ts/pull/2796)
+
+  `ErrorCode.INVALID_TRANSACTION_TYPE` was migrated to `ErrorCode.UNSUPPORTED_TRANSACTION_TYPE`.
+
+```ts
+// before
+const code = ErrorCode.INVALID_TRANSACTION_TYPE;
+```
+
+```ts
+// after
+const code = ErrorCode.UNSUPPORTED_TRANSACTION_TYPE;
+```
+
+### [#2820 - Remove `awaitExecution` functionality](https://github.com/FuelLabs/fuels-ts/pull/2820)
+
+  It is no longer possible to submit transactions using the `awaitExecution` flag and wait for the transaction to be processed at submission:
+
+```ts
+// before
+const response = await account.sendTransaction(transactionRequest, { awaitExecution: true }); 
+```
+
+```ts
+// after
+const submit = await account.sendTransaction(transactionRequest);
+
+const response = await submit.waitForResult();
+```
+### [#2643 - Refactored the `getTransactionCost` method](https://github.com/FuelLabs/fuels-ts/pull/2643)
+
+  Refactored functionality for `Provider.getTransactionCost` to `Account.getTransactionCost` **and** changed estimation parameter from `quantitiesToContract` to `quantities`.
+
+```ts
+// before
+const provider = Provider.create(...);
+const account = Wallet.generate({ ... }) || new Predicate(...);
+const quantities: Array<CoinQuantityLike> = [
+  { amount: 1000, assetId: provider.getBaseAssetId() }
+];
+
+const cost = provider.getTransactionCost(txRequest, {
+  resourceOwner: account,
+  quantitiesToContract: quantities,
+})
+```
+
+```ts
+// after
+const provider = Provider.create(...);
+const account = Wallet.generate({ ... }) || new Predicate(...);
+const quantities: Array<CoinQuantityLike> = [
+  { amount: 1000, assetId: provider.getBaseAssetId() }
+];
+
+const cost = account.getTransactionCost(txRequest, { quantities });
+```
+
 ## July 11, 2024
 
 Release [v0.92.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.92.0)
