@@ -150,7 +150,12 @@ export function extractBreakingChanges(content) {
 
     // Ensure there is exactly one blank line before each `###` subtitle
     sectionContent = sectionContent.replace(/(^|\n)(### .+)/g, (match, newline, subtitle) => {
-        return `${newline.trim()}\n\n${subtitle}`;
+        // Check if the newline is empty or contains only whitespace, add a blank line if necessary
+        if (newline.trim() === '') {
+            return `\n\n${subtitle}`;
+        } else {
+            return `${newline}\n${subtitle}`;
+        }
     });
 
     // Remove any extra blank lines that might appear due to the above replacement
