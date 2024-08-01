@@ -13,8 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: FuelLabs/github-actions/setups/node@master
-      - name: Clear pnpm Store Cache
-        run: pnpm store prune
       - name: Lint Check
         run: |
           pnpm install
