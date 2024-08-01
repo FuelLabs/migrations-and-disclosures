@@ -51,7 +51,7 @@ export async function extractRelease(moduleApiUrl, moduleFilePath, language) {
             currFileContent = currFileContent.split('\n');
             const title = currFileContent[0];
             const remainingContent = currFileContent.slice(1).join('\n');
-            const updatedContent = title + '\n' + newChanges + remainingContent;
+            const updatedContent = title + '\n\n' + newChanges + remainingContent;
             fs.writeFileSync(moduleFilePath, updatedContent);
             console.log('Breaking changes updated in file:', moduleFilePath);
         }
@@ -85,7 +85,7 @@ export async function extractNewChanges(logContent, releases, startingVersion, l
         });
 
         if (breakingChangesSection && !logEntries.includes(`Release [${release.tag_name}](${release.html_url})`)) {
-            newEntries = `## ${releaseDate}\n\n[Release ${release.tag_name}](${release.html_url})\n\n${breakingChangesSection}\n\n` + newEntries;
+            newEntries = `## ${releaseDate}\n\n[Release ${release.tag_name}](${release.html_url})\n\n${breakingChangesSection}\n` + newEntries;
             if (semver.gt(release.tag_name, latestVersion)) {
                 latestVersion = release.tag_name;
             }
