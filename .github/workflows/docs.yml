@@ -12,6 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          path: ~/.local/share/pnpm/store/v3
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}  # Changed the key to force a new cache
+          restore-keys: |
+            ${{ runner.os }}-node-
       - uses: FuelLabs/github-actions/setups/node@master
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -23,8 +28,9 @@ jobs:
           pnpm-store-path: ~/.local/share/pnpm/store/v3
       - name: Debug Info
         run: |
-          ls -la
           pwd
+          ls -la
+          ls -la node_modules
       - name: Lint Check
         run: |
           pnpm install
