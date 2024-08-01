@@ -21,6 +21,10 @@ jobs:
         env:
           PNPM_HOME: ~/.local/share/pnpm
           pnpm-store-path: ~/.local/share/pnpm/store/v3
+      - name: Debug Info
+        run: |
+          ls -la
+          pwd
       - name: Lint Check
         run: |
           pnpm install
