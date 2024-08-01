@@ -28,16 +28,16 @@ async function main() {
     // Extract TS SDK
     await extractRelease(tsApiUrl, tsFilePath, "ts");
 
-    // if (isWorkflow) {
-    //     // create a new branch of docs-hub
-    //     console.log('CREATING A NEW BRANCH');
-    //     branchName = await createNewBranch();
-    // }
+    if (isWorkflow) {
+        // create a new branch of docs-hub
+        console.log('CREATING A NEW BRANCH');
+        branchName = await createNewBranch();
+    }
 
-    // if (isWorkflow) {
-    //     // create a new PR
-    //     console.log('CREATING A NEW PR');
-    //     await handleNewPR(branchName);
-    // }
+    if (isWorkflow) {
+        // create a new PR
+        console.log('CREATING A NEW PR');
+        await handleNewPR(branchName);
+    }
     // edit versions file
 }
