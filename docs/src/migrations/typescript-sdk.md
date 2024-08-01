@@ -18,7 +18,6 @@ const code = ErrorCode.INVALID_TRANSACTION_TYPE;
 const code = ErrorCode.UNSUPPORTED_TRANSACTION_TYPE;
 ```
 
-
 ### Remove `awaitExecution` functionality - [#2820](https://github.com/FuelLabs/fuels-ts/pull/2820)
 
   It is no longer possible to submit transactions using the `awaitExecution` flag and wait for the transaction to be processed at submission:
