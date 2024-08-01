@@ -28,7 +28,6 @@ jobs:
       - name: Lint Check
         working-directory: path/to/your/project  # Set the correct working directory
         run: |
-          pnpm install
           pnpm lint:check
 
   markdown-link-check:
