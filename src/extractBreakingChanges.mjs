@@ -85,7 +85,7 @@ export async function extractNewChanges(logContent, releases, startingVersion, l
         });
 
         if (breakingChangesSection && !logEntries.includes(`Release [${release.tag_name}](${release.html_url})`)) {
-            newEntries = `## ${releaseDate}\n\n[Release ${release.tag_name}](${release.html_url})\n\n${breakingChangesSection}\n` + newEntries;
+            newEntries = `## ${releaseDate}\n\n[Release ${release.tag_name}](${release.html_url})\n${breakingChangesSection}\n` + newEntries;
             if (semver.gt(release.tag_name, latestVersion)) {
                 latestVersion = release.tag_name;
             }
