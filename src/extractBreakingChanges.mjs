@@ -148,10 +148,13 @@ export function extractBreakingChanges(content) {
         return `### ${title} - [${prNumber}](${url})`;
     });
 
-    // Ensure there is a blank line before each `###` subtitle
+    // Ensure there is exactly one blank line before each `###` subtitle
     sectionContent = sectionContent.replace(/(^|\n)(### .+)/g, (match, newline, subtitle) => {
         return `${newline.trim()}\n\n${subtitle}`;
-    }).trim();
+    });
 
-    return sectionContent;
+    // Remove any extra blank lines that might appear due to the above replacement
+    sectionContent = sectionContent.replace(/\n{3,}/g, '\n\n');
+
+    return sectionContent.trim();
 }
