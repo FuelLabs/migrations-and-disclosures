@@ -28,6 +28,9 @@ jobs:
       - name: Lint Check
         working-directory: path/to/your/project  # Set the correct working directory
         run: |
+          rm pnpm-lock.yaml
+          rm -rf node_modules
+          rm -rf ~/Library/pnpm
           pnpm config set store-dir ~/pnpm
           pnpm recursive install
           pnpm lint:check
