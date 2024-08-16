@@ -1,6 +1,6 @@
 # Sway Migrations Guide
 
-## August 14, 2024
+## August 16, 2024
 
 [Release TODO](TODO)
 
