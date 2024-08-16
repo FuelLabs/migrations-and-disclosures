@@ -386,13 +386,82 @@ import { TestAssetId } from 'fuels/test-utils';
 const [assetA] = TestAssetId.random();
 ```
 
+### Adding abi transpiler - [#2856](https://github.com/FuelLabs/fuels-ts/pull/2856)
+
+New ABI spec
+
+The SDK now adheres to the new specs introduced via:
+ - https://github.com/FuelLabs/fuel-specs/pull/596
+ - https://github.com/FuelLabs/fuel-specs/pull/599
+
+Check these out to understand all its changes.
+
+The class `AbiCoder` is no longer exported, and the way to do encoding and decoding of specific types is now via the `Interface.encodeType` and `Interface.decodeType` methods:
+
+```ts
+// before
+const abi = yourAbi;
+const functionArg = abi.functions.inputs[0];
+
+const encoded = AbiCoder.encode(abi, functionArg, valueToEncode);
+const decoded = AbiCoder.decode(abi, functionArg, valueToDecode, 0);
+```
+
+```ts
+// after
+import { Interface } from 'fuels';
+
+const abi = yourAbi;
+const functionArg = abi.functions.inputs[0];
+
+const abiInterface = new Interface(abi);
+
+const encoded = abiInterface.encodeType(functionArg.concreteTypeId, valueToEncode);
+const decoded = abiInterface.decodeType(functionArg.concreteTypeId, valueToDecode);
+```
+
+Previously, you could get a type from the ABI via the `Interface.findTypeById`. This method has been removed after introducing the new abi specification because the concept of a _type_ has been split into concrete types and metadata types. If you want a specific type, you can get it directly from the ABI.
+
+```ts
+// before
+const abiInterface = new Interface(abi);
+
+// internally this method searched the abi types:
+// abi.types.find(t => t.typeId === id);
+const type = abiInterface.findTypeById(id);
+```
+
+```ts
+// after
+import { Interface } from 'fuels';
+
+// search the types on the abi directly
+const concreteType = abi.concreteTypes.find(ct => ct.concreteTypeId === id);
+const metadataType = abiInterface.jsonAbi.metadataTypes.find(mt => mt.metadataTypeId === id);
+```
+
+The `JsonAbiArgument` type isn't part of the new ABI spec _([#596](https://github.com/FuelLabs/fuel-specs/pull/596), [#599](https://github.com/FuelLabs/fuel-specs/pull/599))_ as such so we stopped exporting it. Its closest equivalent now would be a concrete type because it fully defines a type.
+
+```ts
+// before
+const arg: JsonAbiArgument = {...};
+```
+
+```ts
+// after
+import { Interface } from 'fuels';
+
+type ConcreteType = JsonAbi["concreteTypes"][number]
+const arg: ConcreteType = {...};
+```
+
 ## July 30, 2024
 
 [Release v0.93.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.93.0)
 
 ### Deploy contract validation - [#2796](https://github.com/FuelLabs/fuels-ts/pull/2796)
 
-  `ErrorCode.INVALID_TRANSACTION_TYPE` was migrated to `ErrorCode.UNSUPPORTED_TRANSACTION_TYPE`.
+`ErrorCode.INVALID_TRANSACTION_TYPE` was migrated to `ErrorCode.UNSUPPORTED_TRANSACTION_TYPE`.
 
 ```ts
 // before
