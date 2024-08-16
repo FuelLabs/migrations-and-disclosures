@@ -81,9 +81,9 @@ let node_config = NodeConfig {
 
 ### Deploying large contracts (loader + blob support) - [#1472](https://github.com/FuelLabs/fuels-rs/pull/1472)
 
-`Contract::new` is removed, replaced with `Contract::regular` with 3 states
+`Contract::new` is removed, replaced with `Contract::regular` with three states
 
-1. A regular contract
+First: A regular contract
 
 What you're used to seeing. It is either initialized from raw code or loaded from a file:
 
@@ -117,7 +117,7 @@ let contract_id = Contract::load_from(
 .await?;
 ```
 
-2. Loader contract, blobs pending upload
+Second: Loader contract, blobs pending upload
 
 You can turn a regular contract into a loader contract:
 
@@ -152,7 +152,7 @@ You can also split this into two parts by first calling `upload_blobs` and then 
 
 doing so will have `deploy` only submit the create tx while the uploading will be done in `upload_blobs`.
 
-3. Loader, with blobs deployed
+Third: Loader, with blobs deployed
 
 You arrive at this contract type by eithers having the blob ids and creating it manually:
 
