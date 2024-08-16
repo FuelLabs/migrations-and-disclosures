@@ -1,5 +1,390 @@
 # TypeScript SDK Migrations Guide
 
+## August 30, 2024
+
+[Release v0.94.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.94.0)
+
+# Migration Notes
+
+### Consider message on resources cache - [#2872](https://github.com/FuelLabs/fuels-ts/pull/2872)
+
+  The provider option flag `cacheUtxo` was renamed to `resourceCacheTTL`
+
+```ts
+// before
+const provider = await Provider.create(FUEL_NETWORK_URL, {
+  cacheUtxo: 5000,
+});
+
+
+using launched = await launchTestNode({
+  providerOptions: {
+    cacheUtxo: 5000,
+  },
+});
+```
+
+```ts
+// after
+const provider = await Provider.create(FUEL_NETWORK_URL, {
+  resourceCacheTTL: 5000,
+});
+
+using launched = await launchTestNode({
+  providerOptions: {
+    resourceCacheTTL: 5000,
+  },
+});
+```
+### Prettify `typegen` api - [#2824](https://github.com/FuelLabs/fuels-ts/pull/2824)
+
+  ## `Predicate` class
+
+ - `Predicate` class constructor parameters renamed: `inputData` > `data`
+
+```ts
+// before
+import { Predicate } from 'fuels';
+
+const predicate = new Predicate({
+  ...unchangedParameters,
+  inputData,
+});
+```
+
+```ts
+// after
+import { Predicate } from 'fuels';
+
+const predicate = new Predicate({
+  ...unchangedParameters,
+  data,
+});
+```
+
+- Typegen extended/generated `Predicate` now accepts a single parameter for initialization
+
+```ts
+// before
+import { TestPredicateAbi__factory } from './typegend';
+
+TestPredicateAbi__factory.createInstance(provider, data, configurableConstants);
+```
+
+```ts
+// after
+import { TestPredicate } from './typegen';
+
+new TestPredicate({
+  provider,
+  data,
+  configurableConstants
+});
+```
+
+## `launchTestNode` utility
+
+ - Renamed `contractsConfigs[].deployer` to  `contractsConfigs[].factory`
+ - Removed `contractsConfigs[].bytecode` and `.hex.ts` file
+
+The bytecode is now saved within the factory class, so you don't have to deal with it.
+
+```ts
+// before
+import { TokenAbi__factory } from './typegend';
+import TokenAbiHex from './typegend/contracts/TokenAbi.hex';
+
+using launched = await launchTestNode({
+  contractsConfigs: [{
+    deployer: TokenAbi__factory,
+    bytecode: TokenAbiHex
+  }],
+});
+```
+
+```ts
+// after
+import { TokenFactory } from './typegend';
+
+using launched = await launchTestNode({
+  contractsConfigs: [{
+    factory: TokenFactory,
+  }],
+})
+```
+
+## Renamed method `deployContract` to `deploy`
+
+Removed the redundant suffix on the `ContractFactory` class method name.
+
+```ts
+// before
+import { ContractFactory } from 'fuels';
+
+const factory = new ContractFactory(wallet);
+
+factory.deployContract();
+```
+
+```ts
+// after
+import { ContractFactory } from 'fuels';
+
+const factory = new ContractFactory(wallet);
+
+factory.deploy();
+```
+
+
+## Typegen `Contract` template
+
+ - Removed `Abi__factory` suffix from class names
+ - The file `<name>.hex` was removed (access it via `<Name>.bytecode`)
+ - The files `<name>__factory.ts` and `<name>.d.dts` were merged into `<name>.ts`
+ - The class `<Name>` and the interface `<Name>Abi` are now just `<Name>`
+ - Method `<Name>Factory.deployContract()` renamed to `<Name>Factory.deploy()`
+ - You may need to remove the previously generated `<typegenDir>/contracts/factories` directory
+
+```ts
+// before
+import { TestContractAbi, TestContract__factory } from './typegen'
+import testContractBytecode from './typegen/contracts/TestContract.hex'
+
+const instance = await TestContract__factory.connect(id, wallet);
+
+const deploy = await TestContract__factory.deployContract(testContractBytecode, wallet);
+const { contract } = await deploy.waitForResult();
+```
+
+```ts
+// after
+import { TestContract, TestContractFactory } from './typegen'
+
+const instance = new TestContract(id, wallet);
+
+const deploy = await TestContractFactory.deploy(wallet);
+const { contract } = await deploy.waitForResult();
+```
+
+## Typegen `Predicate` template
+
+ - Removed `Abi__factory` suffix from class names
+ - Started accepting a single param object in constructor
+ - You may need to remove the previously generated `<typegenDir>/predicates/factories` directory
+
+```ts
+// before
+import { TestPredicateAbi__factory } from './typegen'
+
+const predicate = TestPredicateAbi__factory.createInstance(provider);
+```
+
+```ts
+// after
+import { TestPredicate } from './typegen'
+
+const predicate = new TestPredicate({ provider });
+```
+
+## Typegen `Script` template
+
+ - Removed `Abi__factory` suffix from class names
+ - You may need to remove the previously generated `<typegenDir>/scripts/factories` directory
+
+```ts
+// before
+import { TestPredicateAbi__factory } from './typegen'
+
+const script = TestScriptAbi__factory.createInstance(wallet);
+```
+
+```ts
+// after
+import { TestPredicate } from './typegen'
+
+const script = new TestScript(wallet);
+```
+
+### Non-blocking blob deployment - [#2929](https://github.com/FuelLabs/fuels-ts/pull/2929)
+
+The transaction ID from a contract deployment is now returned as a promise.
+```ts
+// before
+import { ContractFactory } from 'fuels'; 
+
+const factory = new ContractFactory(bytecode, abi, wallet);
+const { waitForResult, contractId, transactionId } = await factory.deploy();
+console.log(transactionId); // 0x123....
+```
+
+```ts
+// after
+import { ContractFactory } from 'fuels'; 
+
+const factory = new ContractFactory(bytecode, abi, wallet);
+const { waitForResult, contractId, waitForTransactionId } = await factory.deploy();
+const transactionId = await waitForTransactionId();
+console.log(transactionId); // 0x123....
+```
+
+### Improve `()` and `Option<T>` type handling - [#2777](https://github.com/FuelLabs/fuels-ts/pull/2777)
+
+  - `()` and `Option<T>` Sway types are now either required or optional, dependent on where the argument appears in the function arguments.
+
+  Given these Sway functions:
+  ```sway
+  fn type_then_void_then_type(x: u8, y: (), z: u8) -> ()
+  fn type_then_void_then_void(x: u8, y: (), z: ()) -> ()
+  
+  fn type_then_option_then_type(x: u8, y: Option<u8>, z: u8) -> ()
+  fn type_then_option_then_option(x: u8, y: Option<u8>, z: Option<u8>) -> ()
+  ```
+  
+  This is what changes:
+  ```ts
+  // before
+  contract.functions.type_then_void_then_type(42, 43)
+  contract.functions.type_then_void_then_void(42) // Unchanged
+  
+  contract.functions.type_then_option_then_type(42, undefined, 43)
+  contract.functions.type_then_option_then_option(42, undefined, undefined)
+  ```
+
+  ```ts
+  // after
+  contract.functions.type_then_void_then_type(42, undefined, 43)
+  contract.functions.type_then_void_then_void(42) // Unchanged 
+
+  contract.functions.type_then_option_then_type(42, undefined, 43)
+  contract.functions.type_then_option_then_option(42)
+  ```
+
+### `fuel-core@0.32.1` and large contract deployments - [#2827](https://github.com/FuelLabs/fuels-ts/pull/2827)
+
+  `MAX_CONTRACT_SIZE` is no longer exported, it should now be fetched from the chain.
+
+```ts
+// before
+import { MAX_CONTRACT_SIZE } from 'fuels';
+```
+
+```ts
+// after
+import { Provider, FUEL_NETWORK_URL } from 'fuels'; 
+
+const provider = await Provider.create(FUEL_NETWORK_URL);
+const { consensusParameters } = provider.getChain();
+const maxContractSize = consensusParameters.contractParameters.contractMaxSize.toNumber();
+```
+
+### Deprecate `FUEL_NETWORK_URL` and `LOCAL_NETWORK_URL`- [#2915](https://github.com/FuelLabs/fuels-ts/pull/2915)
+
+  Removed `FUEL_NETWORK_URL` constant.
+
+```ts
+// before
+import { FUEL_NETWORK_URL } from 'fuels';
+
+const provider = await Provider.create(FUEL_NETWORK_URL);
+```
+
+```ts
+// after
+const provider = await Provider.create('https://127.0.0.1:4000/v1/graphql');
+```
+
+Removed `LOCAL_NETWORK_URL` constant.
+
+```ts
+// before
+import { LOCAL_NETWORK_URL } from 'fuels';
+
+const provider = await Provider.create(LOCAL_NETWORK_URL);
+```
+
+```ts
+// after
+const provider = await Provider.create('https://127.0.0.1:4000/v1/graphql');
+```
+
+### Integrate `launchTestNode` in remaining packages - [#2811](https://github.com/FuelLabs/fuels-ts/pull/2811)
+
+  Removed `generateTestWallet` and `seedTestWallet` utilities.
+
+```ts
+// before
+import { bn } from "@fuel-ts/math";
+import {
+  seedTestWallet,
+  generateTestWallet,
+} from "@fuel-ts/account/test-utils";
+
+const provider = await Provider.create("http://127.0.0.1:4000/v1/graphql");
+
+// seeding
+const walletA = Wallet.fromPrivateKey("0x...", provider);
+const baseAssetId = provider.getBaseAssetId();
+seedTestWallet(wallet, [{ assetId: baseAssetId, amount: bn(100_000) }]);
+
+// generating
+const walletB = await generateTestWallet(provider, [[1_000, baseAssetId]]);
+```
+
+```ts
+// after
+import { launchTestNode } from 'fuels/test-utils';
+
+// create two wallets seeded with 100_000 units of the base asset
+using launched = await launchTestNode({
+  walletsConfig: {
+    count: 2,
+    amountPerCoin: 100_000,
+  },
+});
+
+const {
+  wallets: [walletA, walletB]
+} = launched;
+
+const balance = await walletA.getBalance() // 100_000
+```
+
+Removed `launchNodeAndGetWallets` utility.
+
+```ts
+// before
+import { launchNodeAndGetWallets } from 'fuels/test-utils';
+
+const { provider, wallets } = await launchNodeAndGetWallets();
+```
+
+```ts
+// after
+import { launchTestNode } from 'fuels/test-utils';
+
+using launched = await launchTestNode();
+
+const { provider, wallets } = launched;
+```
+
+### Renamed `AssetId` to `TestAssetId`- [#2905](https://github.com/FuelLabs/fuels-ts/pull/2905)
+
+  Renamed testing class `AssetId` to `TestAssetId`.
+
+```ts
+// before
+import { AssetId } from 'fuels/test-utils';
+
+const [assetA] = AssetId.random();
+```
+
+```ts
+// after
+import { TestAssetId } from 'fuels/test-utils';
+
+const [assetA] = TestAssetId.random();
+```
+
 ## July 30, 2024
 
 [Release v0.93.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.93.0)
