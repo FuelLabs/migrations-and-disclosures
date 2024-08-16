@@ -34,11 +34,12 @@ using launched = await launchTestNode({
   },
 });
 ```
+
 ### Prettify `typegen` api - [#2824](https://github.com/FuelLabs/fuels-ts/pull/2824)
 
-  ## `Predicate` class
+## `Predicate` class
 
- - `Predicate` class constructor parameters renamed: `inputData` > `data`
+- `Predicate` class constructor parameters renamed: `inputData` > `data`
 
 ```ts
 // before
@@ -82,8 +83,8 @@ new TestPredicate({
 
 ## `launchTestNode` utility
 
- - Renamed `contractsConfigs[].deployer` to  `contractsConfigs[].factory`
- - Removed `contractsConfigs[].bytecode` and `.hex.ts` file
+- Renamed `contractsConfigs[].deployer` to  `contractsConfigs[].factory`
+- Removed `contractsConfigs[].bytecode` and `.hex.ts` file
 
 The bytecode is now saved within the factory class, so you don't have to deal with it.
 
@@ -133,15 +134,14 @@ const factory = new ContractFactory(wallet);
 factory.deploy();
 ```
 
-
 ## Typegen `Contract` template
 
- - Removed `Abi__factory` suffix from class names
- - The file `<name>.hex` was removed (access it via `<Name>.bytecode`)
- - The files `<name>__factory.ts` and `<name>.d.dts` were merged into `<name>.ts`
- - The class `<Name>` and the interface `<Name>Abi` are now just `<Name>`
- - Method `<Name>Factory.deployContract()` renamed to `<Name>Factory.deploy()`
- - You may need to remove the previously generated `<typegenDir>/contracts/factories` directory
+- Removed `Abi__factory` suffix from class names
+- The file `<name>.hex` was removed (access it via `<Name>.bytecode`)
+- The files `<name>__factory.ts` and `<name>.d.dts` were merged into `<name>.ts`
+- The class `<Name>` and the interface `<Name>Abi` are now just `<Name>`
+- Method `<Name>Factory.deployContract()` renamed to `<Name>Factory.deploy()`
+- You may need to remove the previously generated `<typegenDir>/contracts/factories` directory
 
 ```ts
 // before
@@ -166,9 +166,9 @@ const { contract } = await deploy.waitForResult();
 
 ## Typegen `Predicate` template
 
- - Removed `Abi__factory` suffix from class names
- - Started accepting a single param object in constructor
- - You may need to remove the previously generated `<typegenDir>/predicates/factories` directory
+- Removed `Abi__factory` suffix from class names
+- Started accepting a single parameter object in constructor
+- You may need to remove the previously generated `<typegenDir>/predicates/factories` directory
 
 ```ts
 // before
@@ -186,8 +186,8 @@ const predicate = new TestPredicate({ provider });
 
 ## Typegen `Script` template
 
- - Removed `Abi__factory` suffix from class names
- - You may need to remove the previously generated `<typegenDir>/scripts/factories` directory
+- Removed `Abi__factory` suffix from class names
+- You may need to remove the previously generated `<typegenDir>/scripts/factories` directory
 
 ```ts
 // before
@@ -206,6 +206,7 @@ const script = new TestScript(wallet);
 ### Non-blocking blob deployment - [#2929](https://github.com/FuelLabs/fuels-ts/pull/2929)
 
 The transaction ID from a contract deployment is now returned as a promise.
+
 ```ts
 // before
 import { ContractFactory } from 'fuels'; 
@@ -227,35 +228,37 @@ console.log(transactionId); // 0x123....
 
 ### Improve `()` and `Option<T>` type handling - [#2777](https://github.com/FuelLabs/fuels-ts/pull/2777)
 
-  - `()` and `Option<T>` Sway types are now either required or optional, dependent on where the argument appears in the function arguments.
+- `()` and `Option<T>` Sway types are now either required or optional, dependent on where the argument appears in the function arguments.
 
-  Given these Sway functions:
-  ```sway
-  fn type_then_void_then_type(x: u8, y: (), z: u8) -> ()
-  fn type_then_void_then_void(x: u8, y: (), z: ()) -> ()
-  
-  fn type_then_option_then_type(x: u8, y: Option<u8>, z: u8) -> ()
-  fn type_then_option_then_option(x: u8, y: Option<u8>, z: Option<u8>) -> ()
-  ```
-  
-  This is what changes:
-  ```ts
-  // before
-  contract.functions.type_then_void_then_type(42, 43)
-  contract.functions.type_then_void_then_void(42) // Unchanged
-  
-  contract.functions.type_then_option_then_type(42, undefined, 43)
-  contract.functions.type_then_option_then_option(42, undefined, undefined)
-  ```
+Given these Sway functions:
 
-  ```ts
-  // after
-  contract.functions.type_then_void_then_type(42, undefined, 43)
-  contract.functions.type_then_void_then_void(42) // Unchanged 
+```sway
+fn type_then_void_then_type(x: u8, y: (), z: u8) -> ()
+fn type_then_void_then_void(x: u8, y: (), z: ()) -> ()
 
-  contract.functions.type_then_option_then_type(42, undefined, 43)
-  contract.functions.type_then_option_then_option(42)
-  ```
+fn type_then_option_then_type(x: u8, y: Option<u8>, z: u8) -> ()
+fn type_then_option_then_option(x: u8, y: Option<u8>, z: Option<u8>) -> ()
+```
+
+This is what changes:
+
+```ts
+// before
+contract.functions.type_then_void_then_type(42, 43)
+contract.functions.type_then_void_then_void(42) // Unchanged
+
+contract.functions.type_then_option_then_type(42, undefined, 43)
+contract.functions.type_then_option_then_option(42, undefined, undefined)
+```
+
+```ts
+// after
+contract.functions.type_then_void_then_type(42, undefined, 43)
+contract.functions.type_then_void_then_void(42) // Unchanged 
+
+contract.functions.type_then_option_then_type(42, undefined, 43)
+contract.functions.type_then_option_then_option(42)
+```
 
 ### `fuel-core@0.32.1` and large contract deployments - [#2827](https://github.com/FuelLabs/fuels-ts/pull/2827)
 
@@ -454,6 +457,7 @@ Removed `TransactionResult.gqlTransaction`. You can use the `TransactionResult.t
 // before
 const { gqlTransaction } = await new TransactionResponse('your-tx-id').waitForResult();
 ```
+
 ```ts
 // after
 const { transaction } = await new TransactionResponse('your-tx-id').waitForResult();
