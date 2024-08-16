@@ -2,7 +2,7 @@
 
 ## August 16, 2024
 
-[Release TODO](TODO)
+[Release v0.63.0](https://github.com/FuelLabs/sway/releases/tag/v0.63.0)
 
 ### `#[namespace()]` attribute is no longer supported - [#6279](https://github.com/FuelLabs/sway/pull/6279)
 
