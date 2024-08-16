@@ -4,8 +4,6 @@
 
 [Release v0.94.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.94.0)
 
-# Migration Notes
-
 ### Consider message on resources cache - [#2872](https://github.com/FuelLabs/fuels-ts/pull/2872)
 
   The provider option flag `cacheUtxo` was renamed to `resourceCacheTTL`
@@ -446,6 +444,19 @@ const quantities: Array<CoinQuantityLike> = [
 ];
 
 const cost = account.getTransactionCost(txRequest, { quantities });
+```
+
+### Read malleable fields from transaction status on subscription - [#2962](https://github.com/FuelLabs/fuels-ts/pull/2962)
+
+Removed `TransactionResult.gqlTransaction`. You can use the `TransactionResult.transaction` field instead, which has all the data that `TransactionResult.gqlTransaction` has but already decoded.
+
+```ts
+// before
+const { gqlTransaction } = await new TransactionResponse('your-tx-id').waitForResult();
+```
+```ts
+// after
+const { transaction } = await new TransactionResponse('your-tx-id').waitForResult();
 ```
 
 ## July 11, 2024
