@@ -19,9 +19,7 @@ storage {
 ```rust
 // after
 storage {
-    example_namespace {
-        foo: u64 = 0,
-    },
+    foo in 0x1102bf23d7c2114d6b409df4a1f8f7982eda775e800267be65c1cc2a93cb6c5c: u64 = 0,
 }
 ```
 
@@ -88,5 +86,3 @@ let my_predicate_address: Address = predicate_address().unwrap();
 New partial support for slices.
 
 Automated proxy creation and deployment with forc.
-
-Soon the contract chunking tool will be merged.
