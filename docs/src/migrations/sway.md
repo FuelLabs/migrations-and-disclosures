@@ -55,7 +55,7 @@ fn main() {
 
 The new ABI specification format is hash based to improve support for indexing.  There were also updates to support the latest VM features.
 
-### Added variable length message suport when verifying ed signatures - [#6419](https://github.com/FuelLabs/sway/pull/6419)
+### Added variable length message support when verifying ed signatures - [#6419](https://github.com/FuelLabs/sway/pull/6419)
 
 `ed_verify` was changed to use `Bytes` for the message instead of `b256` for a message hash.
 
