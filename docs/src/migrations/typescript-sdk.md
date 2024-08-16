@@ -391,8 +391,9 @@ const [assetA] = TestAssetId.random();
 New ABI spec
 
 The SDK now adheres to the new specs introduced via:
- - https://github.com/FuelLabs/fuel-specs/pull/596
- - https://github.com/FuelLabs/fuel-specs/pull/599
+
+- https://github.com/FuelLabs/fuel-specs/pull/596
+- https://github.com/FuelLabs/fuel-specs/pull/599
 
 Check these out to understand all its changes.
 

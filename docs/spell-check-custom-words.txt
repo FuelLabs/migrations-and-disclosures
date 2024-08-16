@@ -73,3 +73,8 @@ asm
 cli
 SDKs
 api
+abi
+transpiler
+FuelLabs
+github
+https
