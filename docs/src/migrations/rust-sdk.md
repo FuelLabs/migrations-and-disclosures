@@ -70,9 +70,14 @@ let total_used = max_fee + reserved_base_amount;
 The SDK previously performed transaction validity checks, including signature verification, before sending a transaction to the network. This was problematic since the checks also included signature verification even when utxo validation was turned off. To enable this feature and prevent future issues like failed validation checks due to version mismatches between the network and the SDK's upstream dependencies, we decided to remove the check. Since the SDK already abstracts building transactions for common cases (contract calls, transfers, etc.), validity issues are unlikely. If needed, we can still expose the validity checks as part of the transaction builder or our transaction structs.
 
 ```rust
-/// A `ImpersonatedAccount` simulates ownership of assets held by an account with a given address.
-/// `ImpersonatedAccount` will only succeed in unlocking assets if the the network is setup with
-/// utxo_validation set to false.
+/*
+
+A `ImpersonatedAccount` simulates ownership of assets held by an account with a given address.
+`ImpersonatedAccount` will only succeed in unlocking assets if the the network is setup with
+utxo_validation set to false.
+
+*/
+
 let node_config = NodeConfig {
     utxo_validation: false,
     ..Default::default()
@@ -122,17 +127,17 @@ Second: Loader contract, blobs pending upload
 You can turn a regular contract into a loader contract:
 
 ```rust
-        let contract = Contract::load_from(
-            contract_binary,
-            LoadConfiguration::default(),
-        )?
-        .convert_to_loader(max_words_per_blob)?
+let contract = Contract::load_from(
+    contract_binary,
+    LoadConfiguration::default(),
+)?
+.convert_to_loader(max_words_per_blob)?
 ```
 
 or, if you have the blobs, create it directly:
 
 ```rust
-        let contract = Contract::loader_for_blobs(blobs, random_salt(), vec![])?;
+let contract = Contract::loader_for_blobs(blobs, random_salt(), vec![])?;
 ```
 
 You can also revert back to the regular contract via `revert_to_regular`.
@@ -142,12 +147,12 @@ If you now call `deploy` the contract will first deploy the blobs and then the l
 You can also split this into two parts by first calling `upload_blobs` and then `deploy`:
 
 ```rust
-    let contract_id = Contract::load_from(contract_binary, LoadConfiguration::default())?
-        .convert_to_loader(1024)?
-        .upload_blobs(&wallet, TxPolicies::default())
-        .await?
-        .deploy(&wallet, TxPolicies::default())
-        .await?;
+let contract_id = Contract::load_from(contract_binary, LoadConfiguration::default())?
+    .convert_to_loader(1024)?
+    .upload_blobs(&wallet, TxPolicies::default())
+    .await?
+    .deploy(&wallet, TxPolicies::default())
+    .await?;
 ```
 
 doing so will have `deploy` only submit the create tx while the uploading will be done in `upload_blobs`.
@@ -157,19 +162,19 @@ Third: Loader, with blobs deployed
 You arrive at this contract type by either having the blob ids and creating it manually:
 
 ```rust
-        let contract = Contract::loader_for_blob_ids(all_blob_ids, random_salt(), vec![])?;
+let contract = Contract::loader_for_blob_ids(all_blob_ids, random_salt(), vec![])?;
 ```
 
 or by calling `upload_blobs` as in the previous case:
 
 ```rust
-        let contract = Contract::load_from(
-            contract_binary,
-            LoadConfiguration::default().with_salt(random_salt()),
-        )?
-        .convert_to_loader(max_words_per_blob)?
-        .upload_blobs(&wallet, TxPolicies::default())
-        .await?;
+let contract = Contract::load_from(
+    contract_binary,
+    LoadConfiguration::default().with_salt(random_salt()),
+)?
+.convert_to_loader(max_words_per_blob)?
+.upload_blobs(&wallet, TxPolicies::default())
+.await?;
 ```
 
 Calling deploy on this contract only deploys the loader.
