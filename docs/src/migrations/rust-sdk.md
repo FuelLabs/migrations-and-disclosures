@@ -154,7 +154,7 @@ doing so will have `deploy` only submit the create tx while the uploading will b
 
 Third: Loader, with blobs deployed
 
-You arrive at this contract type by eithers having the blob ids and creating it manually:
+You arrive at this contract type by either having the blob ids and creating it manually:
 
 ```rust
         let contract = Contract::loader_for_blob_ids(all_blob_ids, random_salt(), vec![])?;
