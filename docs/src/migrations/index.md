@@ -8,7 +8,7 @@ Full migration reference can be found [here](./typescript-sdk.md)
 
 ## Rust SDK
 
-Coming soon
+Full migration reference can be found [here](./rust-sdk.md)
 
 ## Sway
 
