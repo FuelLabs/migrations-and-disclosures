@@ -71,7 +71,7 @@ pub fn ed_verify(public_key: b256, signature: B512, msg: Bytes)
 
 Some functions in the STD now return an `Option` instead of reverting.  This allows developers to fail gracefully.  More functions will do this in the future.
 
-```rust
+```sway
 // before
 let my_predicate_address: Address = predicate_address();
 ```
