@@ -1,6 +1,6 @@
 # Rust SDK Migrations Guide
 
-## Aug 16, 2024
+## August 16, 2024
 
 [Release v0.66.0](https://github.com/FuelLabs/fuels-rs/releases/tag/v0.66.0)
 
