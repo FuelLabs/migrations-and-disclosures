@@ -97,26 +97,34 @@ let my_predicate_address: Address = predicate_address().unwrap();
 ### Some STD functions now return types have been updated to match the Fuel Specifications
 
 - `output_count()` now returns a `u16` over a `u64`
+
 Before:
+
 ```sway
 let output_count: u64 = output_count();
 ```
+
 After:
+
 ```sway
 let my_output_count: u16 = output_count();
 ```
 
 - `tx_maturity` now returns an `Option<u32>` over an `Option<u64>`
+
 Before:
+
 ```sway
 let my_tx_maturity: u64 = tx_maturity().unwrap()
 ```
+
 After:
+
 ```sway
 let my_tx_maturity: u32 = tx_maturity().unwrap()
 ```
 
-### Some STD functions have been made private. These will no longer be available for developers to use - 
+### Some STD functions have been made private. These will no longer be available for developers to use
 
 - `input_pointer()`
 - `output_pointer()`
@@ -127,6 +135,7 @@ let my_tx_maturity: u32 = tx_maturity().unwrap()
 The following functions now follow this format:
 
 Inputs:
+
 - `input_type()`
 - `input_predicate_data()`
 - `input_predicate()`
@@ -136,11 +145,13 @@ Inputs:
 - `input_message_data()`
 - `input_message_nonce()`
 
-Ouputs:
+Outputs:
+
 - `output_type()`
 - `output_amount()`
 
 Transactions:
+
 - `tx_script_length()`
 - `tx_script_data_length()`
 - `tx_witness_data_length()`
