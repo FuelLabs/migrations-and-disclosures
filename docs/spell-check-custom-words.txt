@@ -72,5 +72,8 @@ Configurables
 asm
 cli
 SDKs
+script
+namespacing
+SRC
 SDK's
 utxo

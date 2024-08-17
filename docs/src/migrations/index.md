@@ -12,4 +12,4 @@ Full migration reference can be found [here](./rust-sdk.md)
 
 ## Sway
 
-Coming soon
+Full migration reference can be found [here](./sway.md)
