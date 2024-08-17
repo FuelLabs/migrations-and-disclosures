@@ -78,3 +78,8 @@ transpiler
 FuelLabs
 github
 https
+script
+namespacing
+SRC
+SDK's
+utxo
