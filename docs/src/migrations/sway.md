@@ -80,9 +80,7 @@ pub fn ed_verify(public_key: b256, signature: B512, msg_hash: b256)
 pub fn ed_verify(public_key: b256, signature: B512, msg: Bytes)
 ```
 
-### Some STD functions now return an `Option` instead of reverting - [#6405](https://github.com/FuelLabs/sway/pull/6405)
-[#6414](https://github.com/FuelLabs/sway/pull/6414)
-[#6418](https://github.com/FuelLabs/sway/pull/6418)
+### Some STD functions now return an `Option` instead of reverting - [#6405](https://github.com/FuelLabs/sway/pull/6405), [#6414](https://github.com/FuelLabs/sway/pull/6414), [#6418](https://github.com/FuelLabs/sway/pull/6418)
 
 Some functions in the STD now return an `Option` instead of reverting.  This allows developers to fail gracefully.  More functions will do this in the future.
 
@@ -95,7 +93,38 @@ let my_predicate_address: Address = predicate_address();
 // after
 let my_predicate_address: Address = predicate_address().unwrap();
 ```
-The following functions now follow this format;
+
+### Some STD functions now return types have been updated to match the Fuel Specifications
+
+- `output_count()` now returns a `u16` over a `u64`
+Before:
+```sway
+let output_count: u64 = output_count();
+```
+After:
+```sway
+let my_output_count: u16 = output_count();
+```
+
+- `tx_maturity` now returns an `Option<u32>` over an `Option<u64>`
+Before:
+```sway
+let my_tx_maturity: u64 = tx_maturity().unwrap()
+```
+After:
+```sway
+let my_tx_maturity: u32 = tx_maturity().unwrap()
+```
+
+### Some STD functions have been made private. These will no longer be available for developers to use - 
+
+- `input_pointer()`
+- `output_pointer()`
+- `tx_witness_pointer()`
+- `tx_script_start_pointer()`
+- `tx_script_data_start_pointer()`
+
+The following functions now follow this format:
 
 Inputs:
 - `input_type()`
@@ -119,6 +148,7 @@ Transactions:
 - `tx_script_data()`
 - `tx_script_bytecode()`
 - `tx_script_bytecode_hash()`
+
 ### Non-breaking Changes
 
 New partial support for slices.
