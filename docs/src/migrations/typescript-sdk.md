@@ -37,7 +37,7 @@ using launched = await launchTestNode({
 
 ### Prettify `typegen` api - [#2824](https://github.com/FuelLabs/fuels-ts/pull/2824)
 
-## `Predicate` class
+### `Predicate` class
 
 - `Predicate` class constructor parameters renamed: `inputData` > `data`
 
@@ -81,7 +81,7 @@ new TestPredicate({
 });
 ```
 
-## `launchTestNode` utility
+### `launchTestNode` utility
 
 - Renamed `contractsConfigs[].deployer` to  `contractsConfigs[].factory`
 - Removed `contractsConfigs[].bytecode` and `.hex.ts` file
@@ -112,7 +112,7 @@ using launched = await launchTestNode({
 })
 ```
 
-## Renamed method `deployContract` to `deploy`
+### Renamed method `deployContract` to `deploy`
 
 Removed the redundant suffix on the `ContractFactory` class method name.
 
@@ -134,7 +134,7 @@ const factory = new ContractFactory(wallet);
 factory.deploy();
 ```
 
-## Typegen `Contract` template
+### Typegen `Contract` template
 
 - Removed `Abi__factory` suffix from class names
 - The file `<name>.hex` was removed (access it via `<Name>.bytecode`)
@@ -164,7 +164,7 @@ const deploy = await TestContractFactory.deploy(wallet);
 const { contract } = await deploy.waitForResult();
 ```
 
-## Typegen `Predicate` template
+### Typegen `Predicate` template
 
 - Removed `Abi__factory` suffix from class names
 - Started accepting a single parameter object in constructor
@@ -184,7 +184,7 @@ import { TestPredicate } from './typegen'
 const predicate = new TestPredicate({ provider });
 ```
 
-## Typegen `Script` template
+### Typegen `Script` template
 
 - Removed `Abi__factory` suffix from class names
 - You may need to remove the previously generated `<typegenDir>/scripts/factories` directory
