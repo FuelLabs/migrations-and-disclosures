@@ -81,6 +81,8 @@ pub fn ed_verify(public_key: b256, signature: B512, msg: Bytes)
 ```
 
 ### Some STD functions now return an `Option` instead of reverting - [#6405](https://github.com/FuelLabs/sway/pull/6405)
+[#6414](https://github.com/FuelLabs/sway/pull/6414)
+[#6418](https://github.com/FuelLabs/sway/pull/6418)
 
 Some functions in the STD now return an `Option` instead of reverting.  This allows developers to fail gracefully.  More functions will do this in the future.
 
@@ -93,7 +95,30 @@ let my_predicate_address: Address = predicate_address();
 // after
 let my_predicate_address: Address = predicate_address().unwrap();
 ```
+The following functions now follow this format;
 
+Inputs:
+- `input_type()`
+- `input_predicate_data()`
+- `input_predicate()`
+- `input_message_sender()`
+- `input_message_recipient()`
+- `input_message_data_length()`
+- `input_message_data()`
+- `input_message_nonce()`
+
+Ouputs:
+- `output_type()`
+- `output_amount()`
+
+Transactions:
+- `tx_script_length()`
+- `tx_script_data_length()`
+- `tx_witness_data_length()`
+- `tx_witness_data()`
+- `tx_script_data()`
+- `tx_script_bytecode()`
+- `tx_script_bytecode_hash()`
 ### Non-breaking Changes
 
 New partial support for slices.
