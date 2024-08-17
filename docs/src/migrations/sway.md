@@ -8,7 +8,9 @@
 
 We no longer support the `#[namespace()]` attribute.  If you use it, notably with SRC14, you should migrate to using the `in` keyword if you want backwards compatibility.  If you just care about namespacing, you should use the new namespacing syntax.
 
-```rust
+Backwards compatibility places `foo` at `sha256("storage_example_namespace_0")`
+
+```sway
 // before
 #[namespace(example_namespace)]
 storage {
@@ -16,10 +18,21 @@ storage {
 }
 ```
 
-```rust
+```sway
 // after
 storage {
     foo in 0x1102bf23d7c2114d6b409df4a1f8f7982eda775e800267be65c1cc2a93cb6c5c: u64 = 0,
+}
+```
+
+New / recommended method places `foo` at `sha256("storage::example_namespace.foo")`
+
+```sway
+// new
+storage {
+    example_namespace {
+        foo: u64 = 0,
+    },
 }
 ```
 
@@ -27,7 +40,7 @@ storage {
 
 The code below does not compile any more.
 
-```rust
+```sway
 configurable {
     X: u8 = 10,
 }
@@ -37,7 +50,7 @@ fn main() {
 }
 ```
 
-```rust
+```sway
 configurable {
     X: u8 = 10,
 }
@@ -57,12 +70,12 @@ The new ABI specification format is hash based to improve support for indexing. 
 
 `ed_verify` was changed to use `Bytes` for the message instead of `b256` for a message hash.
 
-```rust
+```sway
 // before
 pub fn ed_verify(public_key: b256, signature: B512, msg_hash: b256)
 ```
 
-```rust
+```sway
 // after
 pub fn ed_verify(public_key: b256, signature: B512, msg: Bytes)
 ```
@@ -76,7 +89,7 @@ Some functions in the STD now return an `Option` instead of reverting.  This all
 let my_predicate_address: Address = predicate_address();
 ```
 
-```rust
+```sway
 // after
 let my_predicate_address: Address = predicate_address().unwrap();
 ```
