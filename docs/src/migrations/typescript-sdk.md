@@ -456,6 +456,48 @@ type ConcreteType = JsonAbi["concreteTypes"][number]
 const arg: ConcreteType = {...};
 ```
 
+### Read malleable fields from transaction status on subscription - [#2962](https://github.com/FuelLabs/fuels-ts/pull/2962)
+
+Removed `TransactionResult.gqlTransaction`. You can use the `TransactionResult.transaction` field instead, which has all the data that `TransactionResult.gqlTransaction` has but already decoded.
+
+```ts
+// before
+const { gqlTransaction } = await new TransactionResponse('your-tx-id').waitForResult();
+```
+
+```ts
+// after
+const { transaction } = await new TransactionResponse('your-tx-id').waitForResult();
+```
+
+### Fix assembly process for account transfer operation - [#2963](https://github.com/FuelLabs/fuels-ts/pull/2963)
+
+The `getTransferOperations` helper function now requires an additional `baseAssetId` parameter.
+
+```ts
+// before
+const transferOperations = getTransferOperations({ inputs, outputs, receipts })
+```
+
+```ts
+// after
+const transferOperations = getTransferOperations({ inputs, outputs, receipts, baseAssetId })
+```
+
+### Wrap subscriptions in promise - [#2964](https://github.com/FuelLabs/fuels-ts/pull/2964)
+
+```ts
+// before
+const subscription = provider.operations.statusChange({ transactionId });
+for await (const response of subscription) { ... }
+```
+
+```ts
+// after
+const subscription = await provider.operations.statusChange({ transactionId });
+for await (const response of subscription) { ... }
+```
+
 ## July 30, 2024
 
 [Release v0.93.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.93.0)
@@ -517,48 +559,6 @@ const quantities: Array<CoinQuantityLike> = [
 ];
 
 const cost = account.getTransactionCost(txRequest, { quantities });
-```
-
-### Read malleable fields from transaction status on subscription - [#2962](https://github.com/FuelLabs/fuels-ts/pull/2962)
-
-Removed `TransactionResult.gqlTransaction`. You can use the `TransactionResult.transaction` field instead, which has all the data that `TransactionResult.gqlTransaction` has but already decoded.
-
-```ts
-// before
-const { gqlTransaction } = await new TransactionResponse('your-tx-id').waitForResult();
-```
-
-```ts
-// after
-const { transaction } = await new TransactionResponse('your-tx-id').waitForResult();
-```
-
-### Fix assembly process for account transfer operation - [#2963](https://github.com/FuelLabs/fuels-ts/pull/2963)
-
-The `getTransferOperations` helper function now requires an additional `baseAssetId` parameter.
-
-```ts
-// before
-const transferOperations = getTransferOperations({ inputs, outputs, receipts })
-```
-
-```ts
-// after
-const transferOperations = getTransferOperations({ inputs, outputs, receipts, baseAssetId })
-```
-
-### Wrap subscriptions in promise - [#2964](https://github.com/FuelLabs/fuels-ts/pull/2964)
-
-```ts
-// before
-const subscription = provider.operations.statusChange({ transactionId });
-for await (const response of subscription) { ... }
-```
-
-```ts
-// after
-const subscription = await provider.operations.statusChange({ transactionId });
-for await (const response of subscription) { ... }
 ```
 
 ## July 11, 2024
