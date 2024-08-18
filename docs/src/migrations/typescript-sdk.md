@@ -209,7 +209,7 @@ The transaction ID from a contract deployment is now returned as a promise.
 
 ```ts
 // before
-import { ContractFactory } from 'fuels'; 
+import { ContractFactory } from 'fuels';
 
 const factory = new ContractFactory(bytecode, abi, wallet);
 const { waitForResult, contractId, transactionId } = await factory.deploy();
@@ -218,7 +218,7 @@ console.log(transactionId); // 0x123....
 
 ```ts
 // after
-import { ContractFactory } from 'fuels'; 
+import { ContractFactory } from 'fuels';
 
 const factory = new ContractFactory(bytecode, abi, wallet);
 const { waitForResult, contractId, waitForTransactionId } = await factory.deploy();
@@ -254,7 +254,7 @@ contract.functions.type_then_option_then_option(42, undefined, undefined)
 ```ts
 // after
 contract.functions.type_then_void_then_type(42, undefined, 43)
-contract.functions.type_then_void_then_void(42) // Unchanged 
+contract.functions.type_then_void_then_void(42) // Unchanged
 
 contract.functions.type_then_option_then_type(42, undefined, 43)
 contract.functions.type_then_option_then_option(42)
@@ -271,7 +271,7 @@ import { MAX_CONTRACT_SIZE } from 'fuels';
 
 ```ts
 // after
-import { Provider, FUEL_NETWORK_URL } from 'fuels'; 
+import { Provider, FUEL_NETWORK_URL } from 'fuels';
 
 const provider = await Provider.create(FUEL_NETWORK_URL);
 const { consensusParameters } = provider.getChain();
@@ -480,7 +480,7 @@ const code = ErrorCode.UNSUPPORTED_TRANSACTION_TYPE;
 
 ```ts
 // before
-const response = await account.sendTransaction(transactionRequest, { awaitExecution: true }); 
+const response = await account.sendTransaction(transactionRequest, { awaitExecution: true });
 ```
 
 ```ts
@@ -533,6 +533,35 @@ const { gqlTransaction } = await new TransactionResponse('your-tx-id').waitForRe
 const { transaction } = await new TransactionResponse('your-tx-id').waitForResult();
 ```
 
+### Fix assembly process for account transfer operation - [#2963](https://github.com/FuelLabs/fuels-ts/pull/2963)
+
+The `getTransferOperations` helper function now requires an additional baseAssetId parameter.
+
+```ts
+// before
+const transferOperations = getTransferOperations({ inputs, outputs, receipts })
+```
+
+```ts
+// after
+const transferOperations = getTransferOperations({ inputs, outputs, receipts, baseAssetId })
+```
+
+### Wrap subscriptions in promise - [#2964](https://github.com/FuelLabs/fuels-ts/pull/2964)
+
+```ts
+// before
+const subscription = provider.operations.statusChange({ transactionId });
+for await (const response of subscription) { ... }
+```
+
+```ts
+// after
+const subscription = await provider.operations.statusChange({ transactionId });
+for await (const response of subscription) { ... }
+```
+
+
 ## July 11, 2024
 
 Release [v0.92.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.92.0)
@@ -579,13 +608,13 @@ const { value } = await contract.functions.xyz().call();
 
 ```ts
 // before
-const coins = await myWallet.getCoins(baseAssetId); 
+const coins = await myWallet.getCoins(baseAssetId);
 const messages = await myWallet.getMessages();
 const balances = await myWallet.getBalances();
 const blocks = await provider.getBlocks();
 
 // after
-const { coins, pageInfo } = await myWallet.getCoins(baseAssetId); 
+const { coins, pageInfo } = await myWallet.getCoins(baseAssetId);
 const { messages, pageInfo } = await myWallet.getMessages();
 const { balances } = await myWallet.getBalances();
 const { blocks, pageInfo } = await provider.getBlocks();
