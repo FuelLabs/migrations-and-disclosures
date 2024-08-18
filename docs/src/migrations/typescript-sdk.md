@@ -535,7 +535,7 @@ const { transaction } = await new TransactionResponse('your-tx-id').waitForResul
 
 ### Fix assembly process for account transfer operation - [#2963](https://github.com/FuelLabs/fuels-ts/pull/2963)
 
-The `getTransferOperations` helper function now requires an additional baseAssetId parameter.
+The `getTransferOperations` helper function now requires an additional `baseAssetId` parameter.
 
 ```ts
 // before
@@ -560,7 +560,6 @@ for await (const response of subscription) { ... }
 const subscription = await provider.operations.statusChange({ transactionId });
 for await (const response of subscription) { ... }
 ```
-
 
 ## July 11, 2024
 
