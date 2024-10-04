@@ -2,7 +2,7 @@
 
 ## Audits
 
-All pulic audits conducted on the Fuel nework can be found [here](https://github.com/FuelLabs/audits)
+All public audits conducted on the Fuel network can be found [here](https://github.com/FuelLabs/audits)
 
 ## Breaking Changes
 
