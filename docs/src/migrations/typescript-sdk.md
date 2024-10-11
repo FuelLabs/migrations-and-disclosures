@@ -6,8 +6,7 @@
 
 ### Bump transaction pagination limit to 60 - [#3306](https://github.com/FuelLabs/fuels-ts/pull/3306)
 
-  - A limit was added of 60 transactions to the `provider.getTransactions()` method.
-
+- A limit was added of 60 transactions to the `provider.getTransactions()` method.
 
 ### Made Address `toString` and `valueOf` returns checksum - [#3310](https://github.com/FuelLabs/fuels-ts/pull/3310)
 
@@ -37,12 +36,12 @@ address.valueOf()
 
 ### Slim down `chainInfoFragment` and `GasCostsFragment` - [#3286](https://github.com/FuelLabs/fuels-ts/pull/3286)
 
-  - `latestBlock` is no longer part of the `ChainInfo` return of `provider.getChain()`. You can fetch it via `provider.getBlock('latest')`.
+- `latestBlock` is no longer part of the `ChainInfo` return of `provider.getChain()`. You can fetch it via `provider.getBlock('latest')`.
 - `ChainInfo['consensusParameters']['gasCosts']` has been slimmed down to only contain data necessary for the operation of the SDK. Up until now, the SDK was fetching more than it needed. If this change affects you, you will have to create a custom graphql query for `gasCosts` for the additional data you need.
 
 ### Optimize balance queries - [#3296](https://github.com/FuelLabs/fuels-ts/pull/3296)
 
-  - Removed the `owner` and `assetId` properties from the response of `Provider.operations.getBalance()`. These properties are also required arguments to execute the function so are redundant in the response. Should you require these values, you should take them from the values that you passed to the function.
+- Removed the `owner` and `assetId` properties from the response of `Provider.operations.getBalance()`. These properties are also required arguments to execute the function so are redundant in the response. Should you require these values, you should take them from the values that you passed to the function.
 - Removed the `owner` property from the response of `Provider.operations.getBalances()`. This property is a required argument to execute the function so is redundant in the response. Should you require this value, you should take it from the value that you passed to the function.
 
 ## August 30, 2024
