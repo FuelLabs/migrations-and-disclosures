@@ -73,7 +73,7 @@ The SDK previously performed transaction validity checks, including signature ve
 /*
 
 A `ImpersonatedAccount` simulates ownership of assets held by an account with a given address.
-`ImpersonatedAccount` will only succeed in unlocking assets if the the network is setup with
+`ImpersonatedAccount` will only succeed in unlocking assets if the network is setup with
 utxo_validation set to false.
 
 */
