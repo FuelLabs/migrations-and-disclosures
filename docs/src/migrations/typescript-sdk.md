@@ -7,8 +7,9 @@
 ### Checksum method to remove `0x` before hashing - [#3313](https://github.com/FuelLabs/fuels-ts/pull/3313)
 
   We fixed the checksum utilities:
- - `Address.toChecksum()`
- - `Address.isChecksumValid()`
+
+- `Address.toChecksum()`
+- `Address.isChecksumValid()`
 
 Now, we correctly remove the leading `0x` before hashing the address.
 
