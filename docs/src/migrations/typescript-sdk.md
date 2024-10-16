@@ -1,5 +1,19 @@
 # TypeScript SDK Migrations Guide
 
+## October 13, 2024
+
+[Release v0.96.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.96.0)
+
+### Checksum method to remove `0x` before hashing - [#3313](https://github.com/FuelLabs/fuels-ts/pull/3313)
+
+  We fixed the checksum utilities:
+ - `Address.toChecksum()`
+ - `Address.isChecksumValid()`
+
+Now, we correctly remove the leading `0x` before hashing the address.
+
+Because of this, previous values were invalid, and the update is required.
+
 ## October 10, 2024
 
 [Release v0.95.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.95.0)
