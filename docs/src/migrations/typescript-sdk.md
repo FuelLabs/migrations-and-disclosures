@@ -1,5 +1,155 @@
 # TypeScript SDK Migrations Guide
 
+## November 15, 2024
+
+[Release v0.97.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.97.0)
+
+### `onDeploy` fuels config supports all Sway program types - [#3383](https://github.com/FuelLabs/fuels-ts/pull/3383)
+
+  - Changed the outputted data from the `onDeploy` callback method for the `fuels.config.ts`. Instead of just emitting the deployed contracts (as an array), it will now emit an object with `contracts`, `predicates` and `scripts`.
+
+```ts
+// Before (fuels.config.ts)
+import { createConfig, FuelsConfig, DeployedContract } from 'fuels';
+
+export default createConfig({
+  output: 'dir/out',
+  onDeploy: (config: FuelsConfig, deployedContracts: DeployedContract[]) => {
+    console.log('contracts', deployedContracts);
+  }
+});
+```
+
+```ts
+// After (fuels.config.ts)
+import { createConfig, FuelsConfig, DeployedData } from 'fuels';
+
+export default createConfig({
+  output: 'dir/out',
+  onDeploy: (config: FuelsConfig, deployed: DeployedData[]) => {
+    console.log('contracts', deployed.contracts);
+    console.log('predicates', deployed.predicates);
+    console.log('scripts', deployed.scripts);
+  }
+});
+```
+
+
+### Remove unnecessary nonce from message gql queries - [#3298](https://github.com/FuelLabs/fuels-ts/pull/3298)
+
+  - Removed the `nonce` property from `Provider.operations.getMessageByNonce()`. This can still be retrieved by `Provider.getMessageByNonce()`.
+
+
+### Refactor predicate and script deployment - [#3389](https://github.com/FuelLabs/fuels-ts/pull/3389)
+
+  `ContractFactory.deployAsBlobTxForScript` has been removed in favor of `Predicate.deploy` and `Script.deploy`:
+
+```ts
+// before
+const factory = new ContractFactory(scriptBytecode, scriptAbi, wallet);
+const { waitForResult } = await factory.deployAsBlobTxForScript();
+const { loaderBytecode, configurableOffsetDiff } = await waitForResult();
+
+// after
+const script = new Script(scriptBytecode, scriptAbi, wallet);
+const { blobId, waitForResult } = await script.deploy(deployerWallet);
+const loaderScript = await waitForResult();
+
+const predicate = new Predicate({ bytecode, abi, provider });
+const { blobId, waitForResult } = await predicate.deploy(deployerWallet);
+const loaderPredicate = await waitForResult();
+```
+
+### Mandate `abi` in `Predicate` constructor - [#3387](https://github.com/FuelLabs/fuels-ts/pull/3387)
+
+  Instantiating a `Predicate` now requires providing its `abi`. If you want to use the `Predicate` as an `Account`, please instantiate it via the `Account` class
+```ts
+// before
+const predicate = new Predicate({ provider, bytecode }); // worked even though abi is missing
+
+// after
+const predicate = new Predicate({ abi, provider, bytecode }); // abi is now mandatory
+
+// predicate as account
+const account = new Account(predicateAddress, provider);
+```
+
+### Optimize `getTransactions` query - [#3336](https://github.com/FuelLabs/fuels-ts/pull/3336)
+
+  The response format for `Provider.getTransactions` remains the same. However, the response format for the query `Provider.operations.getTransactions` has been modified.
+
+```graphql
+// before
+query getTransactions {
+  id
+  rawPayload
+  status {
+    ...
+  }
+}
+```
+
+```graphql
+// after
+query getTransactions {
+  rawPayload
+}
+```
+
+### Limit TX pagination number for `getTransactionsSummaries` - [#3400](https://github.com/FuelLabs/fuels-ts/pull/3400)
+
+  The pagination number for `getTransactionsSummaries` is limited to `60` now
+
+```ts
+// before
+const { transactions } = await getTransactionsSummaries({
+  provider,
+  filters: {
+    owner: account.address.toB256(),
+    first: 200,
+  },
+});
+```
+
+```ts
+// after
+const { transactions } = await getTransactionsSummaries({
+  provider,
+  filters: {
+    owner: account.address.toB256(),
+    first: 60, // Limit is 60 now. A higher value will result in an error
+  },
+});
+```
+
+### Remove `blockId` in transaction list responses - [#3379](https://github.com/FuelLabs/fuels-ts/pull/3379)
+
+  The `blockId` property has been removed from the following GraphQL queries used to list past transactions:
+
+```ts
+const { transactions } = await getTransactionsSummaries({ ... });
+
+const { transactionsByOwner } = await provider.operations.getTransactionsByOwner({ ... });
+```
+
+If the `blockId` is required for a given transaction, it needs to be queried separately with `getTransactionSummary` helper:
+```ts
+import { getTransactionSummary } from 'fuels';
+
+const transaction = await getTransactionSummary({
+  id,
+  provider,
+});
+```
+
+*Note: The `blockId` is still available in the result for a submitted transaction.*
+
+### Optimize coin gql queries - [#3301](https://github.com/FuelLabs/fuels-ts/pull/3301)
+
+  - The `Provider.operations.getCoins()` and  `Provider.operations.getCoinsToSpend` function no longer return the owner. These methods shouldn't be called directly but are used internally to formulate responses from the SDK.
+
+- Removed the property `owner` from the `Provider.operations.getCoinsToSpend()` function. Suggest to use the owner from the input parameters.
+
 ## October 13, 2024
 
 [Release v0.96.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.96.0)
