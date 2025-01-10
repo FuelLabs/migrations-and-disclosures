@@ -86,3 +86,5 @@ utxo
 Bech
 graphql
 gql
+Instantiation
+enum

@@ -6,7 +6,7 @@
 
 ### Making `provider` initialization `sync` again - [#3514](https://github.com/FuelLabs/fuels-ts/pull/3514)
 
-  #### 1. `Provider` Instantiation
+#### 1. `Provider` Instantiation
 
 - Going from `async` to `sync`
 
@@ -94,7 +94,7 @@ const request: ScriptTransactionRequest = contract.functions.add(1).autoCost();
 
 ### Remove redundant gas price call for tx summary - [#3559](https://github.com/FuelLabs/fuels-ts/pull/3559)
 
-  - `calculateTXFeeForSummary` and subsequently the `CalculateTXFeeForSummaryParams` no longer accept a `totalFee` property. If you have the `totalFee`, then there is no need to call the `calculateTxFeeForSummary()` function.
+- `calculateTXFeeForSummary` and subsequently the `CalculateTXFeeForSummaryParams` no longer accept a `totalFee` property. If you have the `totalFee`, then there is no need to call the `calculateTxFeeForSummary()` function.
 
 ```ts
 // before
@@ -129,7 +129,6 @@ await sender.sendTransaction(transactionRequest, {
   enableAssetBurn: true,
 });
 ```
-
 
 ### Remove unused operations - [#3553](https://github.com/FuelLabs/fuels-ts/pull/3553)
 
@@ -181,6 +180,7 @@ ReceiptTransferOut.id
 ### Remove receipt coders - [#3551](https://github.com/FuelLabs/fuels-ts/pull/3551)
 
   All previously deprecated receipt coders have been removed. These classes were barely used aside from a few internal helpers, which were converted to utility functions.
+
 ```ts
 // before
 const messageId = ReceiptMessageOutCoder.getMessageId({
@@ -213,7 +213,7 @@ const assetId = getAssetId(contractId, subId);
 
 ### Remove deprecated `submitAndAwait` operation - [#3548](https://github.com/FuelLabs/fuels-ts/pull/3548)
 
-  - `submitAndAwait` operation was removed
+- `submitAndAwait` operation was removed
 
 After being deprecated since #3101, we have removed this operation altogether. Please use the `submitAndAwaitStatus` method instead which gives the same results as `submitAndAwait`. If you are interested in the deprecation/removal reasons, please refer to https://github.com/FuelLabs/fuel-core/issues/2108.
 
@@ -229,7 +229,7 @@ const response = await provider.operations.submitAndAwaitStatus(txRequest);
 
 ### Remove Bech32 address - [#3493](https://github.com/FuelLabs/fuels-ts/pull/3493)
 
-  - We no longer support Bech32 addresses
+- We no longer support Bech32 addresses
 
 ```ts
 // before
@@ -259,7 +259,7 @@ const address = new Address(b256Address);
 
 ### Redistributed the `@fuel-ts/interfaces` package - [#3492](https://github.com/FuelLabs/fuels-ts/pull/3492)
 
-  - Removed the `AbstractAddress` class; use the `Address` class instead.
+- Removed the `AbstractAddress` class; use the `Address` class instead.
 
 ```ts
 // before
@@ -283,10 +283,9 @@ import { BytesLike } from '@fuel-ts/interfaces'
 import { BytesLike } from 'fuels'
 ```
 
-
 ### Optimizing frontend apps - [#3573](https://github.com/FuelLabs/fuels-ts/pull/3573)
 
-  - `ScriptTransactionRequest.autoCost()` has been renamed to `ScriptTransactionRequest.estimateAndFund()`, initially introduced by #3535 
+- `ScriptTransactionRequest.autoCost()` has been renamed to `ScriptTransactionRequest.estimateAndFund()`, initially introduced by #3535
 
 ```ts
 // before
