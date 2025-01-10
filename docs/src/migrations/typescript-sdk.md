@@ -1,5 +1,314 @@
 # TypeScript SDK Migrations Guide
 
+## January 10, 2025
+
+[Release v0.98.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.98.0)
+
+### Making `provider` initialization `sync` again - [#3514](https://github.com/FuelLabs/fuels-ts/pull/3514)
+
+#### 1. `Provider` Instantiation
+
+- Going from `async` to `sync`
+
+```ts
+// before
+const provider = await Provider.create(NETWORK_URL);
+```
+
+```ts
+// after
+const provider = new Provider(NETWORK_URL);
+```
+
+#### 2. `Provider` methods
+
+- The following methods are now `async`
+
+```ts
+// before
+provider.getNode();
+provider.getChain();
+provider.getChainId();
+provider.getBaseAssetId();
+provider.getGasConfig();
+provider.validateTransaction();
+```
+
+```ts
+// after
+await provider.getNode();
+await provider.getChain();
+await provider.getChainId();
+await provider.getBaseAssetId();
+await provider.getGasConfig();
+await provider.validateTransaction();
+```
+
+#### 3. `TransferParams` and `ContractTransferParams`
+
+- Property `assetId` is now required by [`TransferParams`](https://github.com/FuelLabs/fuels-ts/blob/5d96eb6748e4210029bcbca0490172de81487e05/packages/account/src/account.ts#L56-L60) and [`ContractTransferParams`](https://github.com/FuelLabs/fuels-ts/blob/5d96eb6748e4210029bcbca0490172de81487e05/packages/account/src/account.ts#L62-L66)
+
+```diff
+export type TransferParams = {
+  destination: string | AbstractAddress;
+  amount: BigNumberish;
+-  assetId?: BytesLike;
++  assetId: BytesLike;
+};
+
+export type ContractTransferParams = {
+  contractId: string | AbstractAddress;
+  amount: BigNumberish;
+-  assetId?: BytesLike;
++  assetId: BytesLike;
+};
+```
+
+#### 4. Transaction Response
+
+- The constructor now requires a `chainId`
+
+```ts
+// before
+new TransactionResponse('0x..', provider);
+```
+
+```ts
+// after
+new TransactionResponse('0x..', provider, chainId);
+```
+
+### `autoCost` for transaction estimation and funding - [#3539](https://github.com/FuelLabs/fuels-ts/pull/3539)
+
+  To be brought inline with `autoCost`, funding a contract and script call has been migrated from `fundWithRequiredCoins` to `autoCost`:
+
+```ts
+// before
+const request: ScriptTransactionRequest = contract.functions.add(1).fundWithRequiredCoins();
+```
+
+```ts
+// after
+const request: ScriptTransactionRequest = contract.functions.add(1).autoCost();
+```
+
+### Remove redundant gas price call for tx summary - [#3559](https://github.com/FuelLabs/fuels-ts/pull/3559)
+
+- `calculateTXFeeForSummary` and subsequently the `CalculateTXFeeForSummaryParams` no longer accept a `totalFee` property. If you have the `totalFee`, then there is no need to call the `calculateTxFeeForSummary()` function.
+
+```ts
+// before
+const totalFee = bn(..):
+calculateTXFeeForSummary({ ..., totalFee } as CalculateTXFeeForSummaryParams);
+```
+
+```ts
+// after
+calculateTXFeeForSummary({ ... } as CalculateTXFeeForSummaryParams);
+```
+
+### Prevent implicit asset burn - [#3540](https://github.com/FuelLabs/fuels-ts/pull/3540)
+
+  ```ts
+// before
+const transactionRequest = new ScriptTransactionRequest();
+transactionRequest.inputs.push({ ... });
+
+// since outputs weren't added, assets would be burned
+await sender.sendTransaction(transactionRequest);
+```
+
+```ts
+// after
+const transactionRequest = new ScriptTransactionRequest();
+transactionRequest.inputs.push({ ... });
+
+// now, an error will be thrown unless `enableAssetBurn`is true,
+// in which case, assets can still be burned
+await sender.sendTransaction(transactionRequest, {
+  enableAssetBurn: true,
+});
+```
+
+### Remove unused operations - [#3553](https://github.com/FuelLabs/fuels-ts/pull/3553)
+
+  The following operations have been removed from the `OperationName` enum, as they were never used to assemble operations:
+
+- `OperationName.mint`
+- `OperationName.predicatecall`
+- `OperationName.script`
+- `OperationName.sent`
+
+### Remove receipts deprecated properties - [#3552](https://github.com/FuelLabs/fuels-ts/pull/3552)
+
+  All receipts deprecated properties were removed:
+
+```ts
+// before
+ReceiptCall.from
+
+ReceiptLog.val0
+ReceiptLog.val1
+ReceiptLog.val2
+ReceiptLog.val3
+
+ReceiptLogData.val0
+ReceiptLogData.val1
+
+ReceiptTransfer.from
+
+ReceiptTransferOut.from
+```
+
+```ts
+// after
+ReceiptCall.id
+
+ReceiptLog.ra
+ReceiptLog.rb
+ReceiptLog.rc
+ReceiptLog.rd
+
+ReceiptLogData.ra
+ReceiptLogData.rb
+
+ReceiptTransfer.id
+
+ReceiptTransferOut.id
+```
+
+### Remove receipt coders - [#3551](https://github.com/FuelLabs/fuels-ts/pull/3551)
+
+  All previously deprecated receipt coders have been removed. These classes were barely used aside from a few internal helpers, which were converted to utility functions.
+
+```ts
+// before
+const messageId = ReceiptMessageOutCoder.getMessageId({
+  sender,
+  recipient,
+  nonce,
+  amount,
+  data,
+});
+
+const assetId = ReceiptMintCoder.getAssetId(contractId, subId);
+
+const assetId = ReceiptBurnCoder.getAssetId(contractId, subId);
+```
+
+```ts
+// after
+import { getMessageId, getAssetId } from 'fuels'
+
+const messageId = getMessageId({
+  sender,
+  recipient,
+  nonce,
+  amount,
+  data,
+});
+
+const assetId = getAssetId(contractId, subId);
+```
+
+### Remove deprecated `submitAndAwait` operation - [#3548](https://github.com/FuelLabs/fuels-ts/pull/3548)
+
+- `submitAndAwait` operation was removed
+
+After being deprecated since #3101, we have removed this operation altogether. Please use the `submitAndAwaitStatus` method instead which gives the same results as `submitAndAwait`. If you are interested in the deprecation/removal reasons, please refer to https://github.com/FuelLabs/fuel-core/issues/2108.
+
+```ts
+// before
+const response = await provider.operations.submitAndAwait(txRequest);
+```
+
+```ts
+// after
+const response = await provider.operations.submitAndAwaitStatus(txRequest);
+```
+
+### Remove Bech32 address - [#3493](https://github.com/FuelLabs/fuels-ts/pull/3493)
+
+- We no longer support Bech32 addresses
+
+```ts
+// before
+import { Address, Bech32Address } from "fuels";
+
+const bech32Address: Bech32Address = "fuel1234";
+const address = new Address(bech32Address);
+```
+
+```ts
+// after
+import { Address, B256Address } from "fuels";
+
+const b256Address: B256Address = "0x1234";
+const address = new Address(b256Address);
+```
+
+- Removed `INVALID_BECH32_ADDRESS` error code.
+
+- Removed associated Bech32 helper functions.
+  - `normalizeBech32`
+  - `isBech32`
+  - `toB256`
+  - `getBytesFromBech32`
+  - `toBech32`
+  - `clearFirst12BytesFromB256`
+
+### Redistributed the `@fuel-ts/interfaces` package - [#3492](https://github.com/FuelLabs/fuels-ts/pull/3492)
+
+- Removed the `AbstractAddress` class; use the `Address` class instead.
+
+```ts
+// before
+import { AbstractAddress } from 'fuels';
+```
+
+```ts
+// after
+import { Address } from 'fuels';
+```
+
+- Removed the `@fuel-ts/interfaces` package; use the `fuels` package instead.
+
+```ts
+// before
+import { BytesLike } from '@fuel-ts/interfaces'
+```
+
+```ts
+// after
+import { BytesLike } from 'fuels'
+```
+
+### Optimizing frontend apps - [#3573](https://github.com/FuelLabs/fuels-ts/pull/3573)
+
+- `ScriptTransactionRequest.autoCost()` has been renamed to `ScriptTransactionRequest.estimateAndFund()`, initially introduced by #3535
+
+```ts
+// before
+await request.autoCost(wallet);
+```
+
+```ts
+// after
+await request.estimateAndFund(wallet);
+```
+
+- `BaseInvocationScope.autoCost()` has been renamed back to `BaseInvocationScope.fundWithRequiredCoins()`, initially introduced by #3535
+
+```ts
+// before
+const request = await contract.functions.increment().autoCost();
+```
+
+```ts
+// after
+const request = await contract.functions.increment().fundWithRequiredCoins();
+```
+
 ## November 15, 2024
 
 [Release v0.97.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.97.0)
