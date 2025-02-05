@@ -4,7 +4,7 @@
 
 [Release v0.99.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.99.0)
 
-### Remove `pageInfo` from `getBalances` GraphQl operations - [#3652](https://github.com/FuelLabs/fuels-ts/pull/3652)
+### Remove `pageInfo` from `getBalances` GraphQL operations - [#3652](https://github.com/FuelLabs/fuels-ts/pull/3652)
 
 - The `pageInfo` field has been removed from the response of the `provider.operations.getBalances` query.
 
