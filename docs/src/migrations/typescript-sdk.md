@@ -4,9 +4,9 @@
 
 [Release v0.99.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.99.0)
 
-### Remove `pageInfo` from `getBalances` GraphQL operations - [#3652](https://github.com/FuelLabs/fuels-ts/pull/3652)
+### Remove `pageInfo` from `getBalances` GraphQl operations - [#3652](https://github.com/FuelLabs/fuels-ts/pull/3652)
 
-  The `pageInfo` field has been removed from the response of the `provider.operations.getBalances` query.
+- The `pageInfo` field has been removed from the response of the `provider.operations.getBalances` query.
 
 ```ts
 // before
@@ -33,7 +33,7 @@ const { balances } = await provider.getBalances();
 
 ### Remove `ContractUtils` namespaced export - [#3570](https://github.com/FuelLabs/fuels-ts/pull/3570)
 
-  - `ContractUtils` was removed and the underlying functions (`getContractRoot()`, `getContractStorageRoot()`, `getContractId()`, `hexlifyWithPrefix()` are now exported directly from `fuels`.
+- `ContractUtils` was removed and the underlying functions `getContractRoot()`, `getContractStorageRoot()`, `getContractId()`, `hexlifyWithPrefix()` are now exported directly from `fuels`.
 
 ```ts
 // before
