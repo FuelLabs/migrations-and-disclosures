@@ -1,5 +1,50 @@
 # TypeScript SDK Migrations Guide
 
+## February 4, 2025
+
+[Release v0.99.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.99.0)
+
+### Remove `pageInfo` from `getBalances` GraphQL operations - [#3652](https://github.com/FuelLabs/fuels-ts/pull/3652)
+
+- The `pageInfo` field has been removed from the response of the `provider.operations.getBalances` query.
+
+```ts
+// before
+const { balances, pageInfo } = await provider.operations.getBalances({
+  first: 100,
+  filter: { owner: wallet.address.toB256() },
+});
+```
+
+```ts
+// after
+const { balances } = await provider.operations.getBalances({
+  first: 100,
+  filter: { owner: wallet.address.toB256() },
+});
+```
+
+The `getBalances` method of the Provider class remains unchanged, as it never returned pageInfo:
+
+```ts
+// not affected
+const { balances } = await provider.getBalances();
+```
+
+### Remove `ContractUtils` namespaced export - [#3570](https://github.com/FuelLabs/fuels-ts/pull/3570)
+
+- `ContractUtils` was removed and the underlying functions `getContractRoot()`, `getContractStorageRoot()`, `getContractId()`, `hexlifyWithPrefix()` are now exported directly from `fuels`.
+
+```ts
+// before
+import { ContractUtils } from 'fuels';
+```
+
+```ts
+// after
+import { getContractRoot, getContractStorageRoot, getContractId, hexlifyWithPrefix } from 'fuels';
+```
+
 ## January 10, 2025
 
 [Release v0.98.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.98.0)
