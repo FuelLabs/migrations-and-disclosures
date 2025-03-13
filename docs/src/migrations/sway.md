@@ -10,7 +10,7 @@ Below are a simplified example of how to migrate your project quickly. For more 
 
 > Important: Using `forc migrate` requires you to use the version of Sway right before the next release of the breaking change.
 
-For example breaking changes for Sway will come in version `v0.67.0`, you will need to use `v0.66.0` to run `forc migrate`. in order to migrate properly. 
+For example breaking changes for Sway will come in version `v0.67.0`, you will need to use `v0.66.0` to run `forc migrate`. in order to migrate properly.
 
 You can compile and migrate using the previous latest version by running the following command:
 

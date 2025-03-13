@@ -90,3 +90,7 @@ Instantiation
 enum
 pageInfo
 namespaced
+supertrait
+Eq
+PartialEq
+impl
