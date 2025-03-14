@@ -6,7 +6,7 @@
 
 ### New `forc migrate`
 
-Below are a simplified example of how to migrate your project quickly. For more information on how to use `forc migrate` please refer to the [forc migrate docs](https://docs.fuel.network/docs/forc/plugins/forc_migrate/#forc-migrate).
+Below is a simplified example of how to migrate your project quickly. For more information on how to use `forc migrate` please refer to the [`forc migrate` docs](https://docs.fuel.network/docs/forc/plugins/forc_migrate/#forc-migrate).
 
 > Important: Using `forc migrate` requires you to use the version of Sway right before the next release of the breaking change.
 
