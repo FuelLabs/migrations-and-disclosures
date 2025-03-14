@@ -61,7 +61,7 @@ sway_libs = { git = "https://github.com/FuelLabs/sway-libs", tag = "v0.24.2" }
 Run `forc migrate run` walk you through each of the breaking changes and helps you apply them to your project.
 
 ```sh
-   Compiling mira_amm_contract (/Users/calldelegation/mira-v1-core/contracts/mira_amm_contract)
+   Compiling mira_amm_contract (/mira-v1-core/contracts/mira_amm_contract)
 warning: unused manifest key: build-profile.?.release.experimental
    Migrating Breaking change feature storage_domains
      Checked [storage_domains]  Review explicitly defined slot keys in storage declarations (`in` keywords)
