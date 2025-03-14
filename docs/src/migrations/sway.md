@@ -74,6 +74,7 @@ sway_libs = { git = "https://github.com/FuelLabs/sway-libs", tag = "v0.24.2" }
 
 Running `forc migrate run` walks you through each of the breaking changes and helps you apply them to your project.
 If you just want to see the breaking changes in your project without migrating them, you can run `forc migrate check`.
+
 ```sh
    Compiling mira_amm_contract (/mira-v1-core/contracts/mira_amm_contract)
 warning: unused manifest key: build-profile.?.release.experimental
