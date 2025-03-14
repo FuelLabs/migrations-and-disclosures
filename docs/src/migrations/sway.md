@@ -67,7 +67,7 @@ warning: unused manifest key: build-profile.?.release.experimental
      Checked [storage_domains]  Review explicitly defined slot keys in storage declarations (`in` keywords)
       Review [storage_domains]  Explicitly define storage slot keys if they need to be backward compatible
 info: [storage_domains] Explicitly define storage slot keys if they need to be backward compatible
-  --> /Users/calldelegation/mira-v1-core/contracts/mira_amm_contract/src/main.sw:65:1
+  --> /mira-v1-core/contracts/mira_amm_contract/src/main.sw:65:1
    |
 63 |   
 64 |   
