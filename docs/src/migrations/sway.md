@@ -20,7 +20,7 @@ fuelup component add forc@0.66.10
 
 #### 1. Run `forc migrate show`
 
-Running `forc migrate show` will show you the breaking changes within your project. For example:
+Running `forc migrate show` will inform you about all the breaking changes in the next release. For example:
 
 ```sh
 Breaking change features:
