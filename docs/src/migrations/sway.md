@@ -135,7 +135,7 @@ forc build
 
 ### Compiler/std-lib: storage collison between variables and StorageMap, allows hidden backdoors, likely loss of funds - [#6701](https://github.com/FuelLabs/sway/issues/6701)
 
-Certain storage types, like, e.g., StorageMap allow storage slots of their contained elements to be defined based on developer's input. E.g., the key in a StorageMap used to calculate the storage slot is a developer input.
+Certain storage types, like, e.g., `StorageMap` allow storage slots of their contained elements to be defined based on developer's input. E.g., the key in a `StorageMap` used to calculate the storage slot is a developer input.
 
 To ensure that pre-images of such storage slots can never be the same as a pre-image of compiler generated key of a storage field, we will prefix the pre-images of storage fields with a single byte that denotes the storage field domain. Storage types like `StorageMap` must have a different domain prefix than this storage field domain which will be set to 0u8.
 
