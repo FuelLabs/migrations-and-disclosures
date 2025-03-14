@@ -131,7 +131,7 @@ fuelup default latest
 forc build
 ```
 
-> Using the forc migration tool is highly recommended, and the changes below are only for reference.
+> Using the `forc migrate` tool is highly recommended, and the changes below are only for reference.
 
 ### Compiler/std-lib: storage collison between variables and StorageMap, allows hidden backdoors, likely loss of funds - [#6701](https://github.com/FuelLabs/sway/issues/6701)
 
