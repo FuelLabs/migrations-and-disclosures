@@ -24,16 +24,30 @@ Running `forc migrate show` will inform you about all the breaking changes in th
 
 ```sh
 Breaking change features:
-  - storage_domains    (https://github.com/FuelLabs/sway/issues/6701)
+  - storage_domains            (https://github.com/FuelLabs/sway/issues/6701)
+  - partial_eq                 (https://github.com/FuelLabs/sway/issues/6883)
+  - try_from_bytes_for_b256    (https://github.com/FuelLabs/sway/issues/6994)
+  - merge_core_std             (https://github.com/FuelLabs/sway/issues/7006)
 
-Migration steps (1 manual and 1 semiautomatic):
+Migration steps (1 manual, 3 semiautomatic, and 3 automatic):
 storage_domains
   [M] Review explicitly defined slot keys in storage declarations (`in` keywords)
   [S] Explicitly define storage slot keys if they need to be backward compatible
 
+partial_eq
+  [A] Implement experimental `PartialEq` and `Eq` traits
+  [S] Remove deprecated `Eq` trait implementations and `experimental_partial_eq` attributes
+
+try_from_bytes_for_b256
+  [A] Replace `b256::from(<bytes>)` calls with `b256::try_from(<bytes>).unwrap()`
+  [A] Replace `<bytes>.into()` calls with `<bytes>.try_into().unwrap()`
+
+merge_core_std
+  [S] Replace `core` with `std` in paths
+
 Experimental feature flags:
-- for Forc.toml:  experimental = { storage_domains = true }
-- for CLI:        --experimental storage_domains
+- for Forc.toml:  experimental = { storage_domains = true, partial_eq = true, try_from_bytes_for_b256 = true, merge_core_std = true }
+- for CLI:        --experimental storage_domains,partial_eq,try_from_bytes_for_b256,merge_core_std
 ```
 
 #### 2. Update `forc.toml` dependencies
