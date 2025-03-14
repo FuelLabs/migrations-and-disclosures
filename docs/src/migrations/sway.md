@@ -58,7 +58,7 @@ sway_libs = { git = "https://github.com/FuelLabs/sway-libs", tag = "v0.24.2" }
 
 #### 3. Run `forc migrate run`
 
-Run `forc migrate run` walk you through each of the breaking changes and helps you apply them to your project.
+Running `forc migrate run` walks you through each of the breaking changes and helps you apply them to your project.
 
 ```sh
    Compiling mira_amm_contract (/mira-v1-core/contracts/mira_amm_contract)
