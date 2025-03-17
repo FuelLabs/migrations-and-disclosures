@@ -29,7 +29,9 @@ fuel-core-chain-config = { version = "0.41.7", default-features = false }
 ### Wallet refactoring - [#1620](https://github.com/FuelLabs/fuels-rs/pull/1620)
 
 #### `ImpersonatedAccount` is removed
+
 To achieve the same functionality instantiate a `FakeSigner:
+
 ```rust
 // before
 let address =
@@ -47,6 +49,7 @@ let impersonator = Wallet::new(fake_signer, provider.clone());
 ```
 
 #### `AwsKmsSigner` and `GoogleKmsSigner` moved
+
 under `fuels::accounts::signers::kms::aws` and `fuels::accounts::signers::kms::google`, respectfully.
 
 ```rust
@@ -62,6 +65,7 @@ use fuels::accounts::signers::kms::google::GoogleKmsSigner;
 ```
 
 #### `KmsWallet` removed
+
 use an ordinary `Wallet` now with a kms signer (aws or google)
 
 #### `WalletUnlocked` and `Wallet` substituted by `Wallet<Unlocked<S = PrivateKeySigner>>` or `Wallet<Locked>`
@@ -127,8 +131,11 @@ let wallet = launch_provider_and_get_wallet().await?;
 The provider is now mandatory for `Wallet::new`.
 
 Common operations in the new API:
-##### Creating a random wallet:
+
+##### Creating a random wallet
+
 a) Two step (useful when you haven't started the node but need the address)
+
 ```rust
     // Create a random private key signer
     let signer = PrivateKeySigner::random(&mut rng);
@@ -136,28 +143,37 @@ a) Two step (useful when you haven't started the node but need the address)
     let provider = setup_test_provider(coins.clone(), vec![], None, None).await?;
     let wallet = Wallet::new(signer, provider);
  ```
+
 b) One step (when you already have a provider)
+
 ```rust
     let wallet = Wallet::random(&mut rng, provider.clone());
 ```
+
 ##### Locking a wallet
+
 ```rust
     let locked_wallet = wallet.lock();
 ```
+
 ##### Creating a locked wallet
+
 ```rust
     let wallet = Wallet::new_locked(addr, provider.clone());
 ```
 
 ##### Wallets no longer sign
+
 You use one of the signers for that. Or, if your wallet is unlocked, get its signer by calling `wallet.signer()`.
 
-#### `ViewOnlyAccount` no longer requires `core::fmt::Debug` and `core::clone::Clone` as supertraits.
+#### `ViewOnlyAccount` no longer requires `core::fmt::Debug` and `core::clone::Clone` as supertraits
 
 #### `Wallet` no longer handles encrypting keys for disk storage
+
 Use the `fuels::accounts::Keystore` for that (feature-gated under `accounts-keystore`)
 
 #### AWS/Google kms feature flags changed
+
 They're now `accounts-signer-aws-kms` and `accounts-signer-google-kms`.
 
 ### Use `total_gas` and `total_fee` from tx status - [#1574](https://github.com/FuelLabs/fuels-rs/pull/1574)

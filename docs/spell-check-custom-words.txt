@@ -94,3 +94,7 @@ supertrait
 Eq
 PartialEq
 impl
+aws
+kms
+FakeSigner
+supertraits
