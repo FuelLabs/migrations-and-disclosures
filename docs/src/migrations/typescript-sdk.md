@@ -4,7 +4,7 @@
 
 [Release v0.100.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.100.0)
 
-### [#3697 - Made `ResourceCache` consider resource owner](https://github.com/FuelLabs/fuels-ts/pull/3697)
+### Made `ResourceCache` consider resource owner - [#3697](https://github.com/FuelLabs/fuels-ts/pull/3697)
 
   ```ts
 //before
@@ -20,7 +20,7 @@ provider.cache?.getActiveData(owner)
 provider.cache?.isCached(owner, key);
 ```
 
-### [#3590 - Upgrade `fuel-core` to `0.41.7`](https://github.com/FuelLabs/fuels-ts/pull/3590)
+### Upgrade `fuel-core` to `0.41.7` - [#3590](https://github.com/FuelLabs/fuels-ts/pull/3590)
 
   Because of the latest `fuel-core` changes, TS SDK does not throw the following error codes and messages anymore:
 
