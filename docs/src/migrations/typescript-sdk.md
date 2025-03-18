@@ -19,23 +19,24 @@ const owner = wallet.address.toB256();
 provider.cache?.getActiveData(owner)
 provider.cache?.isCached(owner, key);
 ```
+
 ### [#3590 - Upgrade `fuel-core` to `0.41.7`](https://github.com/FuelLabs/fuels-ts/pull/3590)
 
   Because of the latest `fuel-core` changes, TS SDK does not throw the following error codes and messages anymore:
 
-1. **NOT_ENOUGH_FUNDS**
+#### 1. **NOT_ENOUGH_FUNDS**
 
 ```ts
 // before
 "The account(s) sending the transaction don't have enough funds to cover the transaction."
 ```
-   
+
 ```ts
 // after
 "Insufficient funds or too many small value coins. Consider combining UTXOs."
 ```
 
-2. **MAX_COINS_REACHED**
+#### 2. **MAX_COINS_REACHED**
 
 ```ts
 // before
