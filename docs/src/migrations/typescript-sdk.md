@@ -24,6 +24,56 @@ provider.cache?.isCached(owner, key);
 
   Because of the latest `fuel-core` changes, TS SDK does not throw the following error codes and messages anymore:
 
+1. **NOT_ENOUGH_FUNDS**
+
+```ts
+// before
+"The account(s) sending the transaction don't have enough funds to cover the transaction."
+```
+   
+```ts
+// after
+"Insufficient funds or too many small value coins. Consider combining UTXOs."
+```
+
+2. **MAX_COINS_REACHED**
+
+```ts
+// before
+"The account retrieving coins has exceeded the maximum number of coins per asset. Please consider combining your coins into a single UTXO."
+```
+
+```ts
+// after
+"Insufficient funds or too many small value coins. Consider combining UTXOs."
+```
+
+Both error codes were removed in favor of `INSUFFICIENT_FUNDS_OR_MAX_COINS`
+
+## March 17, 2025
+
+[Release v0.100.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.100.0)
+
+### Made `ResourceCache` consider resource owner - [#3697](https://github.com/FuelLabs/fuels-ts/pull/3697)
+
+  ```ts
+//before
+provider.cache?.getActiveData();
+provider.cache?.isCached(key);
+```
+
+```ts
+//after
+const owner = wallet.address.toB256();
+
+provider.cache?.getActiveData(owner)
+provider.cache?.isCached(owner, key);
+```
+
+### Upgrade `fuel-core` to `0.41.7` - [#3590](https://github.com/FuelLabs/fuels-ts/pull/3590)
+
+  Because of the latest `fuel-core` changes, TS SDK does not throw the following error codes and messages anymore:
+
 #### 1. **NOT_ENOUGH_FUNDS**
 
 ```ts
