@@ -1,12 +1,72 @@
 # TypeScript SDK Migrations Guide
 
+## May 19, 2025
+
+[Release v0.101.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.101.0)
+
+### Enforce `predicateData` when predicate has arguments - [#3886](https://github.com/FuelLabs/fuels-ts/pull/3886)
+
+Predicates that define arguments must now be instantiated with the data property. It is no longer allowed to omit data when the predicate expects input arguments.
+
+For example, for the given predicate:
+
+```rs
+predicate;
+
+fn main(pin: u64) -> bool {
+    return 999 == pin;
+}
+```
+
+The following code would compile, even though the predicate expects arguments:
+
+```ts
+// before
+const predicateNoData = new PredicatePin({ provider }) // ✅ Allowed (incorrectly)
+
+const predicate = new PredicatePin({ provider, data: [100] }) // ✅ Correct
+```
+
+TypeScript now enforces that data must be provided:
+
+```ts
+// after
+const predicateNoData = new PredicatePin({ provider }) // ❌ Error: missing required `data`
+
+const predicate = new PredicatePin({ provider, data: [100] }) // ✅ Correct
+```
+
+### Remove `BaseInvocationScope.getTransactionId()` - [#3864](https://github.com/FuelLabs/fuels-ts/pull/3864)
+
+- `getTransactionId()` is no longer available on the `BaseInvocationScope`.
+
+```ts
+// before
+const contract = new CounterContract(contractId, wallet)
+
+const scope = contract.functions.get_counter()
+
+const txId = await scope.getTransactionId()
+```
+
+```ts
+// after
+const contract = new CounterContract(contractId, wallet)
+
+const request = contract.functions.get_counter().fundWithRequiredCoins()
+
+const chainId = await provider.getChainId()
+
+const txId = await scope.getTransactionId(chainId)
+```
+
 ## March 17, 2025
 
 [Release v0.100.0](https://github.com/FuelLabs/fuels-ts/releases/tag/v0.100.0)
 
 ### Made `ResourceCache` consider resource owner - [#3697](https://github.com/FuelLabs/fuels-ts/pull/3697)
 
-  ```ts
+```ts
 //before
 provider.cache?.getActiveData();
 provider.cache?.isCached(key);
@@ -22,7 +82,7 @@ provider.cache?.isCached(owner, key);
 
 ### Upgrade `fuel-core` to `0.41.7` - [#3590](https://github.com/FuelLabs/fuels-ts/pull/3590)
 
-  Because of the latest `fuel-core` changes, TS SDK does not throw the following error codes and messages anymore:
+Because of the latest `fuel-core` changes, TS SDK does not throw the following error codes and messages anymore:
 
 #### 1. **NOT_ENOUGH_FUNDS**
 
