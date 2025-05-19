@@ -38,7 +38,7 @@ const predicate = new PredicatePin({ provider, data: [100] }) // ✅ Correct
 
 ### Remove `BaseInvocationScope.getTransactionId()` - [#3864](https://github.com/FuelLabs/fuels-ts/pull/3864)
 
-  - `getTransactionId()` is no longer available on the `BaseInvocationScope`.
+- `getTransactionId()` is no longer available on the `BaseInvocationScope`.
 
 ```ts
 // before
@@ -66,7 +66,7 @@ const txId = await scope.getTransactionId(chainId)
 
 ### Made `ResourceCache` consider resource owner - [#3697](https://github.com/FuelLabs/fuels-ts/pull/3697)
 
-  ```ts
+```ts
 //before
 provider.cache?.getActiveData();
 provider.cache?.isCached(key);
@@ -82,7 +82,7 @@ provider.cache?.isCached(owner, key);
 
 ### Upgrade `fuel-core` to `0.41.7` - [#3590](https://github.com/FuelLabs/fuels-ts/pull/3590)
 
-  Because of the latest `fuel-core` changes, TS SDK does not throw the following error codes and messages anymore:
+Because of the latest `fuel-core` changes, TS SDK does not throw the following error codes and messages anymore:
 
 #### 1. **NOT_ENOUGH_FUNDS**
 
