@@ -1,6 +1,13 @@
 # Sway Migrations Guide
 
-## March 13, 2024
+> **Coverage warning:** This archived guide contains selected changes only and
+> stops at Sway `v0.67.0`. It does not cover the `v0.68` through `v0.71`
+> release lines. Review the
+> [Sway release history](https://github.com/FuelLabs/sway/releases) for every
+> version between your exact source and target. The newest upstream release and
+> the compiler distributed for a network can be different.
+
+## March 13, 2025
 
 [Release v0.67.0](https://github.com/FuelLabs/sway/releases/tag/v0.67.0)
 
@@ -133,12 +140,18 @@ Source code successfully changed (7 changes).
     Finished Project is compatible with the next breaking change version of Sway
 ```
 
-#### 4. Switch to the latest version of Sway
+#### 4. Select the exact target version
 
 ```sh
-// Assuming you have 0.67.0 installed
-fuelup default latest
+# After running the migration with the newest patch of the old minor:
+fuelup component add forc@0.67.0
+forc --version
 ```
+
+Do not use `fuelup default latest` as a synonym for the newest Sway release.
+`latest` is a mainnet-channel alias. When the target is a deployed network,
+install and select its explicit `mainnet` or `testnet` channel and confirm the
+component versions with `fuelup show`.
 
 #### 5. Compile your project
 
