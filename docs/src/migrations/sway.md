@@ -19,11 +19,17 @@ Below is a simplified example of how to migrate your project quickly. For more i
 
 For example, breaking changes for Sway will come in version `v0.67.0`, you will need to use `v0.66.10` to run `forc migrate`, in order to migrate properly.
 
-You can compile and migrate using the previous latest version by running the following command:
+Create a temporary custom toolchain, then install the previous patch used by
+the migration:
 
 ```bash
+fuelup toolchain new sway-0-67-migration
 fuelup component add forc@0.66.10
 ```
+
+`fuelup toolchain new` selects the new toolchain as the default. Fuelup does
+not allow individual components to be replaced inside distributed
+`mainnet`, `testnet`, `latest`, or `nightly` toolchains.
 
 #### 1. Run `forc migrate show`
 
@@ -143,7 +149,8 @@ Source code successfully changed (7 changes).
 #### 4. Select the exact target version
 
 ```sh
-# After running the migration with the newest patch of the old minor:
+# In the same custom toolchain, after running the migration with the newest
+# patch of the old minor:
 fuelup component add forc@0.67.0
 forc --version
 ```
