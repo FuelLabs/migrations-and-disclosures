@@ -9,6 +9,11 @@ release, read the GitHub release notes for every intervening version. Record an
 explicit source version, target version, Fuel Core version, network channel,
 and chain ID before changing dependencies.
 
+For a stateful contract migration, test interruption immediately before and
+after checkpoint persistence, idempotent retry, rollback, and mixed-version
+reads in an SDK/node harness. A successful one-call unit test does not establish
+restart or multi-transaction crash safety.
+
 ## Sway
 
 Archived Sway migration notes can be found [here](./sway.md).

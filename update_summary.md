@@ -22,6 +22,8 @@ specific Forc versions to a distributed toolchain, which Fuelup rejects.
 - Replaced `fuelup default latest` with exact compiler selection.
 - Added creation of a temporary custom Fuelup toolchain before installing
   `forc@0.66.10` and replacing it with `forc@0.67.0`.
+- Added stateful migration checks for checkpoint interruption, retry, rollback,
+  mixed-version reads, and restart safety.
 - Aligned the automation cursor file with the highest releases actually
   represented in the documentation.
 
