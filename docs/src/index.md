@@ -23,6 +23,7 @@ between your exact source and target:
 - [Fuel Rust SDK releases](https://github.com/FuelLabs/fuels-rs/releases)
 - [Fuel TypeScript SDK releases](https://github.com/FuelLabs/fuels-ts/releases)
 
-Fuelup's `latest` channel is an alias for the mainnet distribution, not the
-newest upstream compiler. Select `mainnet`, `testnet`, or an exact component
+Fuelup's `latest` channel is a network-distribution alias, not a pointer to
+the newest upstream compiler; resolve its current meaning with `fuelup show`
+before relying on it. Select `mainnet`, `testnet`, or an exact component
 version according to the network and release you intend to target.

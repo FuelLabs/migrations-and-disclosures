@@ -156,7 +156,8 @@ forc --version
 ```
 
 Do not use `fuelup default latest` as a synonym for the newest Sway release.
-`latest` is a mainnet-channel alias. When the target is a deployed network,
+`latest` is a network-channel alias whose live meaning must be resolved, not
+the newest upstream release. When the target is a deployed network,
 install and select its explicit `mainnet` or `testnet` channel and confirm the
 component versions with `fuelup show`.
 

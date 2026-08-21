@@ -14,6 +14,13 @@ after checkpoint persistence, idempotent retry, rollback, and mixed-version
 reads in an SDK/node harness. A successful one-call unit test does not establish
 restart or multi-transaction crash safety.
 
+Never reuse an initialization entrypoint as an upgrade migration: add an
+owner-gated migration step for new roles or state, and test fresh deployments
+separately from upgraded legacy state. When a stored type gains fields, version
+and migrate the persisted values first — new zero-filled fields do not migrate
+legacy data, so keep unmigrated records out of decisions that treat the new
+fields or zero totals as authoritative.
+
 ## Sway
 
 Archived Sway migration notes can be found [here](./sway.md).
