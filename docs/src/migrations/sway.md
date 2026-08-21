@@ -1,6 +1,6 @@
 # Sway Migrations Guide
 
-> **Coverage warning:** This archived guide contains selected changes only and stops at Sway `v0.67.0`. It does not cover the `v0.68` through `v0.71` release lines. Review the [Sway release history](https://github.com/FuelLabs/sway/releases) for every version between your exact source and target. The newest upstream release and the compiler distributed for a network can be different.
+> **Coverage warning:** This archived guide contains selected changes only and stops at Sway `v0.67.0`. It does not cover the `v0.68` and later release lines (`v0.71` was the newest at the July 23, 2026 verification). Review the [Sway release history](https://github.com/FuelLabs/sway/releases) for every version between your exact source and target. The newest upstream release and the compiler distributed for a network can be different.
 
 ## March 13, 2025
 
