@@ -1,6 +1,8 @@
 # Sway Migrations Guide
 
-## March 13, 2024
+> **Coverage warning:** This archived guide contains selected changes only and stops at Sway `v0.67.0`. It does not cover the `v0.68` and later release lines (`v0.71` was the newest at the July 23, 2026 verification). Review the [Sway release history](https://github.com/FuelLabs/sway/releases) for every version between your exact source and target. The newest upstream release and the compiler distributed for a network can be different.
+
+## March 13, 2025
 
 [Release v0.67.0](https://github.com/FuelLabs/sway/releases/tag/v0.67.0)
 
@@ -12,11 +14,14 @@ Below is a simplified example of how to migrate your project quickly. For more i
 
 For example, breaking changes for Sway will come in version `v0.67.0`, you will need to use `v0.66.10` to run `forc migrate`, in order to migrate properly.
 
-You can compile and migrate using the previous latest version by running the following command:
+Create a temporary custom toolchain, then install the previous patch used by the migration:
 
 ```bash
+fuelup toolchain new sway-0-67-migration
 fuelup component add forc@0.66.10
 ```
+
+`fuelup toolchain new` selects the new toolchain as the default. Fuelup does not allow individual components to be replaced inside distributed `mainnet`, `testnet`, `latest`, or `nightly` toolchains.
 
 #### 1. Run `forc migrate show`
 
@@ -133,12 +138,16 @@ Source code successfully changed (7 changes).
     Finished Project is compatible with the next breaking change version of Sway
 ```
 
-#### 4. Switch to the latest version of Sway
+#### 4. Select the exact target version
 
 ```sh
-// Assuming you have 0.67.0 installed
-fuelup default latest
+# In the same custom toolchain, after running the migration with the newest
+# patch of the old minor:
+fuelup component add forc@0.67.0
+forc --version
 ```
+
+Do not use `fuelup default latest` as a synonym for the newest Sway release. `latest` is a network-channel alias whose live meaning must be resolved, not the newest upstream release. When the target is a deployed network, install and select its explicit `mainnet` or `testnet` channel and confirm the component versions with `fuelup show`.
 
 #### 5. Compile your project
 

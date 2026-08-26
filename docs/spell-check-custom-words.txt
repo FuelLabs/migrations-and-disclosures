@@ -98,3 +98,6 @@ aws
 kms
 FakeSigner
 supertraits
+Fuelup's
+entrypoint
+unmigrated

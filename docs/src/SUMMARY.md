@@ -1,8 +1,8 @@
 # Summary
 
-[Network Breaking Changes](./index.md)
+[Network Breaking Changes (Archived Coverage)](./index.md)
 
-- [Migrations](./migrations/index.md)
+- [Migrations (Archived)](./migrations/index.md)
 - [Sway](./migrations/sway.md)
 - [Rust SDK](./migrations/rust-sdk.md)
 - [Typescript SDK](./migrations/typescript-sdk.md)
