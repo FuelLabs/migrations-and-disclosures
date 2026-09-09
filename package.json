@@ -10,7 +10,7 @@
     "@actions/exec": "^1.1.1",
     "@actions/github": "^6.0.0",
     "@octokit/rest": "^21.0.1",
-    "axios": "^1.7.2",
+    "axios": "^1.15.2",
     "markdownlint-cli": "^0.37.0",
     "semver": "^7.6.3"
   }
